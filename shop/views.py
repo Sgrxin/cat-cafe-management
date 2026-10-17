@@ -265,7 +265,7 @@ def reserve(request):
     my = Reservation.objects.filter(user=request.user).order_by("-created_at")[:10]
     return render(request, "shop/reserve.html", {
         "seats": seats, "my_reservations": my,
-        "today": timezone.localdate().isoformat(),
+        "today": timezone.localdate(),
     })
 
 
@@ -444,3 +444,16 @@ def dashboard_data(request, name):
         return JsonResponse({"labels": [v["seat__name"] for v in qs],
                              "values": [v["n"] for v in qs]})
     return JsonResponse({"error": "unknown"}, status=400)
+
+
+@login_required(login_url="login")
+def reserve_cancel(request, rid):
+    """会员取消自己的预约（仅限未开始的）"""
+    r = get_object_or_404(Reservation, id=rid, user=request.user)
+    if r.status in ("pending", "confirmed") and r.date >= timezone.localdate():
+        r.status = "canceled"
+        r.save()
+        messages.success(request, "预约已取消")
+    else:
+        messages.error(request, "该预约无法取消")
+    return redirect("reserve")

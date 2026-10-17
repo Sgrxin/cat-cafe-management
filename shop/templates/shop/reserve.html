@@ -1,8 +1,19 @@
-{% extends "shop/base.html" %}
+﻿{% extends "shop/base.html" %}
 {% block title %}工位预约 · 喵屋猫咖{% endblock %}
 {% block content %}
 <h5 class="fw-bold mb-2">工位预约</h5>
 <p class="hint mb-3">预约成功请提前10分钟到店，超时预约自动取消；如遇时间冲突请更换时段或工位</p>
+
+<div class="row g-2 mb-3">
+  <div class="col-md-6">
+    <p class="minor mb-1">🏛 大厅散座区环境</p>
+    <img src="/media/seats/seat_hall.jpg" class="w-100 r-sub" style="height:150px;object-fit:cover" alt="大厅环境">
+  </div>
+  <div class="col-md-6">
+    <p class="minor mb-1">🚪 主题包间环境</p>
+    <img src="/media/seats/seat_room.jpg" class="w-100 r-sub" style="height:150px;object-fit:cover" alt="包间环境">
+  </div>
+</div>
 
 <div class="d-flex flex-wrap gap-1 mb-4">
   {% for s in seats %}
@@ -52,9 +63,18 @@
       <div class="p-3 pb-1"><strong class="body-text">我的预约</strong></div>
       <ul class="list-group list-group-flush">
         {% for r in my_reservations %}
+        <li class='hint'>DEBUG today={{ today|date:'Y-m-d' }} rdate={{ r.date|date:'Y-m-d' }} status={{ r.status }}</li>
         <li class="list-group-item d-flex justify-content-between align-items-center" style="border-color:var(--line)">
           <span class="body-text">{{ r.date|date:"m-d" }} {{ r.start_time }}-{{ r.end_time }} {{ r.seat.name }}</span>
-          <span class="chip {% if r.status == 'confirmed' %}chip-ok{% elif r.status == 'canceled' %}chip-off{% else %}chip-pend{% endif %}">{{ r.get_status_display }}</span>
+          <span class="d-flex align-items-center gap-2">
+            <span class="chip {% if r.status == 'confirmed' %}chip-ok{% elif r.status == 'canceled' %}chip-off{% else %}chip-pend{% endif %}">{{ r.get_status_display }}</span>
+            {% if r.status == 'confirmed' and r.date >= today %}
+            <form method="post" action="{% url 'reserve_cancel' r.id %}" class="m-0">
+              {% csrf_token %}
+              <button class="btn-txt btn-sm">取消</button>
+            </form>
+            {% endif %}
+          </span>
         </li>
         {% empty %}
         <li class="list-group-item text-center py-4">
