@@ -1,7 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
-from .models import Cat, Product, UserProfile, get_prof
+from .models import Cat, Product, UserProfile
+from .views import get_prof
 
 
 class PageTests(TestCase):
