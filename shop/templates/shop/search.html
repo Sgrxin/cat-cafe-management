@@ -1,0 +1,36 @@
+{% extends "shop/base.html" %}
+{% block title %}搜索 · 喵屋猫咖{% endblock %}
+{% block content %}
+<h5 class="fw-bold mb-3">搜索“{{ q }}”</h5>
+<h6 class="minor mb-2">相关猫咪（{{ cats|length }}）</h6>
+<div class="row g-3 mb-4">
+  {% for c in cats %}
+  <div class="col-md-3">
+    <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none">
+    <div class="card h-100">
+      {% if c.photo %}<img src="{{ c.photo.url }}" class="card-img-top" style="height:140px;object-fit:cover">{% endif %}
+      <div class="card-body py-2 text-center">
+        <strong class="text-dark small">{{ c.name }}</strong>
+        <p class="minor mb-0">{{ c.breed }}</p>
+      </div>
+    </div></a>
+  </div>
+  {% empty %}<p class="minor">没有找到相关猫咪，换个关键词试试</p>{% endfor %}
+</div>
+
+<h6 class="minor mb-2">相关商品（{{ products|length }}）</h6>
+<div class="row g-3">
+  {% for p in products %}
+  <div class="col-md-3">
+    <a href="{% url 'menu' %}" class="text-decoration-none">
+    <div class="card h-100">
+      {% if p.photo %}<img src="{{ p.photo.url }}" class="card-img-top" style="height:140px;object-fit:cover">{% endif %}
+      <div class="card-body py-2 text-center">
+        <strong class="text-dark small">{{ p.name }}</strong>
+        <p class="price small mb-0">¥{{ p.price|floatformat }}</p>
+      </div>
+    </div></a>
+  </div>
+  {% empty %}<p class="minor">没有找到相关商品，换个关键词试试</p>{% endfor %}
+</div>
+{% endblock %}

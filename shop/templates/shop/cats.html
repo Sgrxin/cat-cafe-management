@@ -1,0 +1,53 @@
+﻿{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}猫咪档案 · 喵屋猫咖{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 fw-bold">猫咪档案（{{ cats.count }} 只在岗）</h5>
+  <form class="row g-2">
+    <div class="col-auto">
+      <select name="breed" class="form-select form-sm" style="width:150px">
+        <option value="">全部品种</option>
+        {% for b in breeds %}
+          <option value="{{ b }}" {% if b == sel_breed %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <select name="max_price" class="form-select form-sm" style="width:150px">
+        <option value="">不限身价</option>
+        <option value="500" {% if sel_price == '500' %}selected{% endif %}>500以内</option>
+        <option value="2000" {% if sel_price == '2000' %}selected{% endif %}>2000以内</option>
+        <option value="5000" {% if sel_price == '5000' %}selected{% endif %}>5000以内</option>
+        <option value="20000" {% if sel_price == '20000' %}selected{% endif %}>不限</option>
+      </select>
+    </div>
+    <div class="col-auto"><button class="btn-sub btn btn-sm px-3">筛选</button></div>
+  </form>
+</div>
+
+<div class="row g-3">
+  {% for c in cats %}
+  <div class="col-md-4 col-lg-3">
+    <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none">
+    <div class="card h-100">
+      {% if c.photo %}
+      <img src="{{ c.photo.url }}" class="card-img-top" alt="{{ c.name }}" style="height:170px;object-fit:cover">
+      {% else %}
+      <img src="{% static 'img/cat_placeholder.png' %}" class="card-img-top" alt="{{ c.name }}" style="height:170px;object-fit:cover">
+      {% endif %}
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-baseline">
+          <strong class="text-dark">{{ c.name }}</strong>
+          <span class="hint">身价 ¥{{ c.reference_price|floatformat }}</span>
+        </div>
+        <p class="minor mb-2">{{ c.breed }}</p>
+        <span class="chip chip-cat">{{ c.personality|cut:"，"|truncatechars:8 }}</span>
+      </div>
+    </div></a>
+  </div>
+  {% empty %}
+  <p class="minor">没有符合条件的猫咪，换个筛选条件试试</p>
+  {% endfor %}
+</div>
+{% endblock %}

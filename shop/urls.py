@@ -1,0 +1,30 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("", views.home, name="home"),
+    path("cats/", views.cat_list, name="cats"),
+    path("cats/<int:cat_id>/", views.cat_detail, name="cat_detail"),
+    path("menu/", views.menu, name="menu"),
+    path("menu/order/<int:product_id>/", views.order_create, name="order_create"),
+    path("orders/", views.my_orders, name="my_orders"),
+    path("reserve/", views.reserve, name="reserve"),
+    path("me/", views.member_center, name="me"),
+    path("checkin/", views.checkin, name="checkin"),
+    path("redeem/", views.redeem_list, name="redeem"),
+    path("redeem/<int:gift_id>/", views.redeem_do, name="redeem_do"),
+    path("vote/", views.vote_page, name="vote"),
+    path("vote/<int:cat_id>/", views.vote_do, name="vote_do"),
+    path("staff/orders/", views.staff_orders, name="staff_orders"),
+    path("staff/orders/<int:order_id>/done/", views.staff_order_done, name="staff_order_done"),
+    path("staff/redemptions/", views.staff_redemptions, name="staff_redemptions"),
+    path("staff/redemptions/<int:rid>/done/", views.staff_redemption_done, name="staff_redemption_done"),
+    path("about/", views.about, name="about"),
+    path("about/review/", views.review_post, name="review_post"),
+    path("search/", views.search, name="search"),
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("dashboard/api/<str:name>/", views.dashboard_data, name="dashboard_data"),
+    path("login/", views.user_login, name="login"),
+    path("register/", views.user_register, name="register"),
+    path("logout/", views.user_logout, name="logout"),
+]

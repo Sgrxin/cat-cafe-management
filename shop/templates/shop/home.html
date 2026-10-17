@@ -1,0 +1,213 @@
+﻿{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}首页 · 喵屋猫咖{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 370px;gap:28px;align-items:start">
+
+  <!-- 左主栏 -->
+  <div class="gap-core">
+
+    {% if user.is_authenticated and user.userprofile.role in 'staff,admin' %}
+    <div class="card r-main p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>店员工作台</strong>
+        <span class="minor">{{ today|date:"m月d日" }} 今天</span>
+      </div>
+      <div class="d-flex gap-5">
+        <div>
+          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ staff_today_orders }}</div>
+          <div class="minor">今日订单</div>
+          <a class="btn-txt" href="{% url 'staff_orders' %}">订单管理 →</a>
+        </div>
+        <div>
+          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ staff_pending_redeem }}</div>
+          <div class="minor">待核销兑换</div>
+          <a class="btn-txt" href="{% url 'staff_redemptions' %}">去核销 →</a>
+        </div>
+        <div>
+          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ cats.count }}</div>
+          <div class="minor">在岗猫咪</div>
+          <a class="btn-txt" href="{% url 'cats' %}">查看 →</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- 工位预约（主卡片） -->
+    <div class="card r-main p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <strong>工位预约</strong>
+          <span class="module-sub ms-2">大厅 12 席 / 主题包间 8 间</span>
+        </div>
+        <a class="btn-main btn btn-sm" href="{% url 'reserve' %}">去预约</a>
+      </div>
+
+      {% if user_upcoming %}
+      <div class="st-warn mb-2">
+        你有一笔预约：{{ user_upcoming.date }} {{ user_upcoming.start_time }}-{{ user_upcoming.end_time }}
+        {{ user_upcoming.seat.name }}，请提前10分钟到店
+      </div>
+      {% endif %}
+
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div class="module-sub mb-1">大厅散座</div>
+          <div class="d-flex flex-wrap gap-1">
+            {% for s in hall_seats %}
+            <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}" title="{{ s.name }}{% if s.today_n >= 4 %} 已满{% else %} 可预约{% endif %}">
+              {{ s.name|cut:"大厅" }}号
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="module-sub mb-1">主题包间</div>
+          <div class="d-flex flex-wrap gap-1">
+            {% for s in room_seats %}
+            <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}" title="{{ s.name }}{% if s.today_n >= 4 %} 已满{% else %} 可预约{% endif %}">
+              {{ s.name|cut:"猫屋包间" }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <p class="hint mt-2 mb-0">预约成功请提前10分钟到店，超时预约自动取消；包间按小时计费，含4杯饮品</p>
+    </div>
+
+    <!-- 猫咪精选（次级卡片） -->
+    <div class="card-sub p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong class="body-text">今天想见谁？</strong>
+        <a class="btn-txt" href="{% url 'cats' %}">全部猫咪 →</a>
+      </div>
+      <div class="d-flex gap-3">
+        {% for c in cats %}
+        <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none text-center" style="flex:1">
+          {% if c.photo %}
+          <img src="{{ c.photo.url }}" class="r-sub" alt="{{ c.name }}" style="width:100%;height:104px;object-fit:cover">
+          {% else %}
+          <img src="{% static 'img/cat_placeholder.png' %}" class="r-sub" style="width:100%;height:104px;object-fit:cover" alt="暂无照片">
+          {% endif %}
+          <div class="small text-dark mt-1">{{ c.name }}</div>
+          <div class="hint">{{ c.personality|cut:"，"|truncatechars:6 }}</div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 店里卖什么（无框文字chip） -->
+    <div class="card-sub p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong class="body-text">店里卖什么</strong>
+        <a class="btn-txt" href="{% url 'menu' %}">完整菜单 →</a>
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        {% for p in products|slice:":10" %}
+        <span class="chip chip-cat">{{ p.name }} ¥{{ p.price|floatformat }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧栏 -->
+  <div class="gap-sub">
+
+    {% if user.is_authenticated %}
+    <!-- 会员信息（主卡片，高度自定义） -->
+    <div class="card r-main p-3" style="min-height:270px">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>{{ user.username }}</strong>
+        <span class="lvl"><i class="bi {{ user.userprofile.level_icon }} me-1"></i>{{ user.userprofile.level }}</span>
+      </div>
+      <hr class="my-2" style="border-color:var(--line)">
+      <div class="d-flex justify-content-between body-text"><span>积分</span><span>{{ user.userprofile.points }}</span></div>
+      <div class="d-flex justify-content-between body-text"><span>储值余额</span><span>¥{{ user.userprofile.balance|floatformat }}</span></div>
+      <div class="d-flex justify-content-between body-text"><span>投票券</span><span>{{ user.userprofile.vote_tickets }} 张</span></div>
+      <div class="d-flex justify-content-between body-text mb-2">
+        <span>今日签到</span>
+        <form method="post" action="{% url 'checkin' %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn-sub btn btn-sm" {% if checked %}disabled{% endif %}>{% if checked %}已签到{% else %}签到 +5{% endif %}</button>
+        </form>
+      </div>
+      <div class="hint mb-2">消费1元累计1积分；100积分起兑；兑换后积分不退；签到每天+5</div>
+      <a class="btn-main btn btn-sm w-100" href="{% url 'redeem' %}">去兑换</a>
+    </div>
+
+    <!-- 猫王评选（次级小卡） -->
+    {% if top_votes %}
+    <div class="card-sub p-2">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <strong class="body-text">猫王评选</strong>
+        <a class="btn-txt" href="{% url 'vote' %}">投票 →</a>
+      </div>
+      {% for v in top_votes %}
+      <div class="d-flex align-items-center gap-2 py-1">
+        <span class="small {% if forloop.first %}text-warning{% endif %}">{% if forloop.first %}🏆{% else %}{{ forloop.counter }}.{% endif %}</span>
+        <div class="small flex-grow-1 text-dark">{{ v.cat__name }}</div>
+        <span class="hint">{{ v.n }}票</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- 公告 -->
+    {% if announcements %}
+    <div class="card-sub p-2">
+      <strong class="small">店内公告</strong>
+      {% for a in announcements %}
+      <div class="mt-2">
+        <div class="body-text">{{ a.title }}</div>
+        <div class="hint">{{ a.content|truncatechars:44 }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- 未登录引导 -->
+    <div class="card r-main p-3" style="min-height:270px">
+      <strong>成为喵屋会员</strong>
+      <hr class="my-2" style="border-color:var(--line)">
+      <p class="body-text mb-2">注册即享：工位预约、消费积分、积分兑换、猫王投票</p>
+      <p class="hint mb-3">消费1元累计1积分，100积分起兑；到店储值有折扣</p>
+      <a class="btn-main btn btn-sm w-100 mb-2" href="{% url 'register' %}">注册会员</a>
+      <a class="btn-sub btn btn-sm w-100" href="{% url 'login' %}">登录</a>
+    </div>
+    {% if announcements %}
+    <div class="card-sub p-2">
+      <strong class="small">店内公告</strong>
+      {% for a in announcements %}
+      <div class="body-text mt-2">{{ a.title }}</div>
+      <div class="hint">{{ a.content|truncatechars:44 }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+<!-- 评价墙 -->
+{% if reviews %}
+<div class="mt-4">
+  <strong>喵友们怎么说</strong>
+  <span class="module-sub ms-2">来自到店会员</span>
+  <div class="row g-3 mt-1">
+    {% for r in reviews %}
+    <div class="col-md-4">
+      <div class="card-sub p-3">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="rounded-circle text-center text-white" style="width:28px;height:28px;line-height:28px;background:var(--brand);font-size:13px">{{ r.user.username|first }}</span>
+          <span class="small text-dark">{{ r.user.username }}</span>
+          <span class="hint ms-auto">{{ r.created_at|date:"m-d" }}</span>
+        </div>
+        <span class="text-warning small">{% for i in "12345"|make_list %}{% if forloop.counter <= r.stars %}★{% else %}☆{% endif %}{% endfor %}</span>
+        <p class="small mb-0" style="line-height:1.4">{{ r.content }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

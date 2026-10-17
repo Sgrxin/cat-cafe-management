@@ -1,0 +1,31 @@
+{% extends "shop/base.html" %}
+{% block title %}我的订单 · 喵屋猫咖{% endblock %}
+{% block content %}
+<h5 class="fw-bold mb-3">我的订单</h5>
+{% for o in orders %}
+<div class="card r-sub mb-3">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center" style="border-bottom:1px solid var(--line)">
+    <span class="mono small">{{ o.order_no }}</span>
+    <span class="chip {% if o.status == 'finished' %}chip-ok{% elif o.status == 'canceled' %}chip-off{% else %}chip-pend{% endif %}">{{ o.get_status_display }}</span>
+  </div>
+  <div class="card-body">
+    {% for item in o.items.all %}
+      <div class="d-flex justify-content-between body-text">
+        <span>{{ item.product.name }} <span class="minor">× {{ item.quantity }}</span></span>
+        <span>¥{{ item.unit_price|floatformat }}</span>
+      </div>
+    {% endfor %}
+    <hr class="my-2" style="border-color:var(--line)">
+    <div class="d-flex justify-content-between">
+      <span class="hint">{{ o.created_at|date:"m-d H:i" }} · {{ o.get_order_type_display }}</span>
+      <span class="fw-bold">合计 ¥{{ o.total_amount|floatformat }}</span>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="card r-sub text-center py-5">
+  <p class="minor mb-3">还没有订单，去菜单点一杯吧</p>
+  <a class="btn-main btn btn-sm px-4" href="{% url 'menu' %}">看菜单</a>
+</div>
+{% endfor %}
+{% endblock %}

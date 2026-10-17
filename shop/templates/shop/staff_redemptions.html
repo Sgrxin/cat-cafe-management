@@ -1,0 +1,31 @@
+{% extends "shop/base.html" %}
+{% block title %}兑换核销 · 店员{% endblock %}
+{% block content %}
+<h5 class="fw-bold mb-2">兑换核销</h5>
+<div class="table-wrap my-2">
+  <table class="table table-sm table-hover mb-1">
+    <thead><tr><th>用户</th><th>礼品</th><th>状态</th><th>兑换时间</th><th>操作</th></tr></thead>
+    <tbody>
+    {% for r in redemptions %}
+      <tr>
+        <td class="small">{{ r.user.username }}</td>
+        <td class="small">{{ r.gift.name }}</td>
+        <td><span class="chip {% if r.status == 'done' %}chip-ok{% else %}chip-pend{% endif %}">{{ r.get_status_display }}</span></td>
+        <td class="small">{{ r.created_at|date:"m-d H:i" }}</td>
+        <td>
+          {% if r.status == 'pending' %}
+          <form method="post" action="{% url 'staff_redemption_done' r.id %}" class="m-0">
+            {% csrf_token %}
+            <button class="btn-txt btn-sm">核销发放</button>
+          </form>
+          {% else %}<span class="minor">已处理</span>{% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5" class="text-center minor py-4">暂时没有待发放的兑换</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="hint mt-2">核销时请核对会员用户名与到店取货人一致</p>
+{% endblock %}

@@ -1,0 +1,83 @@
+=================================================
+        外文文献检索指引（6篇）
+=================================================
+
+【去哪搜】
+打开 百度学术：https://xueshu.baidu.com
+（知网对外文收录不全，百度学术搜外文最全、不用登录、免费）
+
+【怎么搜】
+把每篇下面的"搜索词"整句复制到百度学术搜索框 → 回车 →
+看到那篇文献 → 截图（要能看到标题/作者/期刊/年份）→
+贴进《林鑫_猫咖门店管理系统_参考文献检索证明.docx》对应行
+
+【重要】这6篇我已用Crossref国际学术数据库逐一验证真实存在，
+百度学术基本都能搜到。万一某篇搜不到，发我，我再换。
+
+-------------------------------------------------
+
+[14] 搜索词（整句复制）：
+A Pharmacy Drug Information Management System Based on Django Development
+
+直链（点开直接是搜索结果）：
+https://xueshu.baidu.com/s?wd=A+Pharmacy+Drug+Information+Management+System+Based+on+Django+Development
+
+-------------------------------------------------
+
+[15] 搜索词：
+A Remote Wireless Meter Reading System Website Based on Django Development
+
+直链：
+https://xueshu.baidu.com/s?wd=A+Remote+Wireless+Meter+Reading+System+Website+Based+on+Django+Development
+
+-------------------------------------------------
+
+[16] 搜索词：
+Design and evaluation of intelligent student management system based on multi-modal data
+
+直链：
+https://xueshu.baidu.com/s?wd=Design+and+evaluation+of+intelligent+student+management+system+based+on+multi-modal+data
+
+-------------------------------------------------
+
+[17] 搜索词：
+An INTRANET-Based Web Application for College Management System Using Python with Django Web Framework
+
+直链：
+https://xueshu.baidu.com/s?wd=An+INTRANET-Based+Web+Application+for+College+Management+System+Using+Python+with+Django
+
+-------------------------------------------------
+
+[18] ★这篇特别注意★
+这篇发表在罗马尼亚的期刊上，原文是罗马尼亚语，"Introduction in Python Frameworks..."是英文译名。
+你用英文标题搜可能搜不到，改用下面任一方式：
+
+  方式1（搜作者，推荐）搜索词：FUIOR Python Frameworks Web Development
+  方式2（搜期刊名）搜索词：Romanian Journal of Information Technology and Automatic Control 2021
+
+直链（方式1）：
+https://xueshu.baidu.com/s?wd=FUIOR+Introduction+Python+Frameworks+Web+Development
+
+如果百度学术搜不到这篇，还可以用 Semantic Scholar 搜：
+https://www.semanticscholar.org/search?q=FUIOR%20Python%20Frameworks%20Web%20Development
+
+-------------------------------------------------
+
+[19] 搜索词：
+Research on SQL Server Bulk Operation Mechanism
+
+直链：
+https://xueshu.baidu.com/s?wd=Research+on+SQL+Server+Bulk+Operation+Mechanism
+
+-------------------------------------------------
+
+[20] 搜索词：
+Srivastava Django The Python Web Framework
+
+直链：
+https://xueshu.baidu.com/s?wd=Srivastava+Django+The+Python+Web+Framework
+
+-------------------------------------------------
+
+搜完6篇，加上你已经在知网搜到的14篇中文，
+20篇全部凑齐，把截图贴进证明文档就可以交了。

@@ -1,0 +1,160 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}喵屋猫咖{% endblock %}</title>
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
+<style>
+/* ===== 猫咖小店主题（按约束规范词） =====
+   色板：主棕 #7A5C48 / 焦糖橙 #E0913D / 奶白底 #FAF6F1 / 正文 #3D322B / 次要 #8A7A6E / 边线 #E8DFD5 */
+:root{
+  --brand:#7A5C48; --caramel:#E0913D; --caramel-dark:#C87A2E;
+  --bg:#FAF6F1; --text:#3D322B; --muted:#8A7A6E; --ph:#B9AB9E;
+  --line:#E8DFD5; --ok-bg:#EEF4EF; --ok-tx:#5E8A66;
+  --pend-bg:#F3EAE2; --pend-tx:#7A5C48;
+  --off-bg:#EDE6DE; --off-tx:#A99C90;
+  --err:#B5655A;
+}
+body{background:var(--bg);color:var(--text);line-height:1.6;
+  font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+/* 极淡爪印纹理 */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='%237A5C48' fill-opacity='0.03'%3E%3Cellipse cx='40' cy='44' rx='10' ry='8'/%3E%3Ccircle cx='29' cy='32' r='3.6'/%3E%3Ccircle cx='40' cy='29' r='3.8'/%3E%3Ccircle cx='51' cy='32' r='3.6'/%3E%3Cellipse cx='126' cy='126' rx='10' ry='8'/%3E%3Ccircle cx='115' cy='114' r='3.6'/%3E%3Ccircle cx='126' cy='111' r='3.8'/%3E%3Ccircle cx='137' cy='114' r='3.6'/%3E%3C/g%3E%3C/svg%3E");}
+body>*{position:relative;z-index:1}
+
+a{color:var(--brand);text-decoration:none}
+a:hover{color:var(--caramel-dark)}
+h1,h2{font-weight:bold}
+
+/* 导航：暖棕底白字，当前页高亮 */
+.nav-warm{background:var(--brand);height:52px}
+.nav-warm .navbar-brand{color:#fff;font-weight:bold;letter-spacing:1px}
+.nav-warm .nav-link{color:#f3ede6;padding:6px 12px;border-radius:6px;font-size:14px}
+.nav-warm .nav-link:hover{color:#fff;background:rgba(255,255,255,.12)}
+.nav-warm .nav-link.active{color:#fff;background:rgba(255,255,255,.18)}
+.nav-search{height:30px;font-size:13px;border:none;background:rgba(255,255,255,.9);border-radius:6px 0 0 6px;padding-left:12px}
+.nav-search:focus{box-shadow:none;border:none}
+.nav-search-btn{height:30px;border:none;background:rgba(255,255,255,.9);border-radius:0 6px 6px 0;color:var(--brand)}
+
+/* 字号层级（全站不超过4级）：页面标题20-22 / 卡片标题16 / 正文14-15 / 辅助12-13 */
+.page-title{font-size:21px;font-weight:bold;margin:0}
+.card-title{font-size:16px}
+.body-text{font-size:14px}
+.minor{font-size:13px;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);line-height:1.3}
+.price{color:var(--brand);font-weight:bold}
+.price .rmb{font-size:.75em;margin-right:1px}
+
+/* 卡片：白底 12px 圆角 细边或极轻阴影 */
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 1px 3px rgba(90,70,50,.08);}
+.card:hover{box-shadow:0 2px 6px rgba(90,70,50,.12);border-color:#ddd2c4}
+.card-flat{box-shadow:none}
+.card .card-img-top{border-radius:11px 11px 0 0;object-fit:cover}
+.card-sub{background:#fff;border:1px solid var(--line);border-radius:6px}
+
+/* 按钮三款：主=焦糖橙实心 / 次=白底棕描边 / 文字链接 */
+.btn-main{background:var(--caramel);border:1px solid var(--caramel);color:#fff;height:40px;border-radius:8px}
+.btn-main:hover{background:var(--caramel-dark);border-color:var(--caramel-dark);color:#fff}
+.btn-main:active{transform:translateY(1px)}
+.btn-main:disabled{background:var(--off-bg);border-color:var(--off-bg);color:var(--off-tx)}
+.btn-sub{background:#fff;border:1px solid var(--brand);color:var(--brand);border-radius:8px}
+.btn-sub:hover{background:var(--brand);color:#fff}
+.btn-sub:disabled{background:var(--off-bg);border-color:var(--off-bg);color:var(--off-tx)}
+.btn-txt{border:none;background:none;color:var(--brand);padding:0 .2rem;font-size:13px}
+.btn-txt:hover{color:var(--caramel-dark)}
+.btn-main.btn-sm,.btn-sub.btn-sm{height:32px;font-size:13px}
+
+/* 状态 chip（浅底深字小圆角） */
+.chip{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;line-height:1.3}
+.chip-ok{background:var(--ok-bg);color:var(--ok-tx)}
+.chip-pend{background:var(--pend-bg);color:var(--pend-tx)}
+.chip-off{background:var(--full);color:#9A8E83}
+.chip-cat{background:var(--pend-bg);color:var(--brand)}
+.chip-sign{background:var(--pend-bg);color:var(--caramel-dark)}
+
+/* 座位小方块：绿=可预约 灰=已满，悬停显示名称 */
+.seat-dot{width:34px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+.seat-dot.ok{background:var(--ok-bg);border:1px solid var(--ok-tx);color:var(--ok-tx)}
+.seat-dot.full{background:var(--full);border:1px solid #ddd;color:#9A8E83}
+
+/* 表单 */
+.form-control,.form-select{border:1px solid var(--line);border-radius:8px;font-size:14px;color:var(--text)}
+.form-control:focus,.form-select:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(122,92,72,.12)}
+
+/* 表格：包在白卡片里，浅棕表头 */
+.table-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 14px}
+.table thead th{background:var(--pend-bg);color:var(--brand);font-weight:normal;border-bottom:1px solid var(--line)}
+.table td{border-color:var(--line)}
+.table tbody tr:nth-child(even){background:#FBF7F2}
+.mono{font-family:Consolas,monospace;white-space:nowrap}
+
+/* 会员等级小标 */
+.lvl{font-size:12px;color:var(--brand);border:1px solid var(--brand);border-radius:6px;padding:1px 8px;background:#fff}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-warm sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">喵屋猫咖</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">首页</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/cats' in request.path %}active{% endif %}" href="{% url 'cats' %}">猫咪</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/menu' in request.path %}active{% endif %}" href="{% url 'menu' %}">菜单</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/reserve' in request.path %}active{% endif %}" href="{% url 'reserve' %}">预约</a></li>
+        {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link {% if '/vote' in request.path %}active{% endif %}" href="{% url 'vote' %}">投票</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/redeem' in request.path %}active{% endif %}" href="{% url 'redeem' %}">兑换</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/me' in request.path %}active{% endif %}" href="{% url 'me' %}">我的</a></li>
+        {% endif %}
+        {% if user.is_authenticated and user.userprofile.role in 'staff,admin' or user.is_superuser %}
+        <li class="nav-item"><a class="nav-link {% if '/staff' in request.path %}active{% endif %}" href="{% url 'staff_orders' %}">订单管理</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/staff/redemptions' in request.path %}active{% endif %}" href="{% url 'staff_redemptions' %}">核销</a></li>
+        <li class="nav-item"><a class="nav-link {% if '/dashboard' in request.path %}active{% endif %}" href="{% url 'dashboard' %}">看板</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link {% if '/about' in request.path %}active{% endif %}" href="{% url 'about' %}">门店</a></li>
+      </ul>
+      <form class="d-flex" action="{% url 'search' %}" method="get">
+        <input class="form-control nav-search" type="search" name="q" placeholder="搜索猫咪、商品" value="{{ request.GET.q|default:'' }}">
+        <button class="btn nav-search-btn px-2" type="submit"><i class="fa-solid fa-magnifying-glass" style="font-size:12px"></i></button>
+      </form>
+      <ul class="navbar-nav ms-3">
+        {% if user.is_authenticated %}
+          <li class="nav-item"><span class="nav-link">{{ user.username }}</span></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">退出</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">登录</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">注册</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  {% if messages %}
+    {% for m in messages %}
+      <div class="r-sub {% if m.tags == 'success' %}st-ok{% elif m.tags == 'error' %}st-warn{% else %}chip-off{% endif %} mb-3"
+           style="padding:8px 14px;border-radius:6px;border:none">
+        {{ m }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</div>
+
+<div class="container">
+  <p class="hint text-center mt-5 mb-3">喵屋猫咖 · 营业时间 10:00-21:00 · 温州市茶山街道喵屋路8号 · 有问题找店内店员</p>
+</div>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

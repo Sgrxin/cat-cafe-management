@@ -1,0 +1,35 @@
+{% extends "shop/base.html" %}
+{% block title %}注册 · 喵屋猫咖{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card r-main mt-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-1">注册会员</h5>
+        <p class="minor mb-3">注册即成为会员，享预约、积分、投票等权益</p>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label body-text">用户名</label>
+            <input name="username" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label body-text">手机号</label>
+            <input name="phone" class="form-control" maxlength="11">
+          </div>
+          <div class="mb-3">
+            <label class="form-label body-text">密码（至少6位）</label>
+            <input name="password" type="password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label body-text">确认密码</label>
+            <input name="password2" type="password" class="form-control" required>
+          </div>
+          <button class="btn-main btn w-100">注册</button>
+        </form>
+        <p class="minor mt-3 mb-0">已有账号？<a href="{% url 'login' %}">去登录</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

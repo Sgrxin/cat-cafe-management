@@ -1,0 +1,41 @@
+=================================================
+      文献检索指引（更新版 - 还需搜7篇）
+=================================================
+
+[1]~[13] 中文已截图完成 ✓（不用再动）
+[14][15] 新增中文 → 知网搜
+[16]~[20] 外文5篇 → 百度学术搜
+
+=================================================
+一、新增中文 2篇（去知网 cnki.net 搜）
+=================================================
+
+[14] 搜索词：基于微信小程序的校园互助平台设计
+    （作者李静，期刊《软件》2023年）
+
+[15] 搜索词：小程序实现校园互助与班级管理平台
+    （作者兰哲威，期刊《电脑知识与技术》2021年）
+
+=================================================
+二、外文 5篇（去百度学术 xueshu.baidu.com 搜）
+=================================================
+
+[16] 搜索词：
+A Pharmacy Drug Information Management System Based on Django Development
+
+[17] 搜索词：
+A Remote Wireless Meter Reading System Website Based on Django Development
+
+[18] 搜索词：
+Design and evaluation of intelligent student management system based on multi-modal data
+
+[19] 搜索词：
+An INTRANET-Based Web Application for College Management System Using Python with Django Web Framework
+
+[20] 搜索词：
+Srivastava Django The Python Web Framework
+
+-------------------------------------------------
+搜到截图后，贴进《林鑫_猫咖门店管理系统_参考文献检索证明.docx》
+对应行（[14][15][16][17][18][19][20]）。
+搜不到的发我，立刻换。

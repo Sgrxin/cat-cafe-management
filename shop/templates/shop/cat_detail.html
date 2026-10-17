@@ -1,0 +1,63 @@
+﻿{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}{{ cat.name }} · 猫咪档案 · 喵屋猫咖{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-5">
+    {% if cat.photo %}
+    <img src="{{ cat.photo.url }}" class="w-100 r-main" alt="{{ cat.name }}" style="object-fit:cover;max-height:420px">
+    {% else %}
+    <img src="{% static 'img/cat_placeholder.png' %}" class="w-100 r-main" alt="{{ cat.name }}" style="object-fit:cover;max-height:420px">
+    {% endif %}
+    <div class="card-flat p-3 mt-3" style="border:1px solid var(--line);border-radius:12px;background:#fff">
+      <h6 class="mb-2">健康档案</h6>
+      <p class="body-text mb-1">疫苗到期：{{ cat.vaccine_due_date }}</p>
+      <p class="body-text mb-0">{{ cat.health_notes|default:"健康状况良好" }}</p>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <h2 class="fw-bold">{{ cat.name }}
+      <span class="chip chip-cat">{{ cat.get_gender_display }}</span>
+      <span class="chip {% if cat.status == 'on' %}chip-ok{% else %}chip-off{% endif %}">{{ cat.get_status_display }}</span>
+    </h2>
+    <p class="minor">品种：{{ cat.breed }}</p>
+    <div class="row g-2 mb-3">
+      <div class="col-4"><div class="card-sub text-center p-2">
+        <div class="minor">年龄</div>
+        <strong>{% if age_months %}{{ age_months }} 个月{% else %}--{% endif %}</strong>
+      </div></div>
+      <div class="col-4"><div class="card-sub text-center p-2">
+        <div class="minor">参考身价</div>
+        <strong class="price">¥{{ cat.reference_price|floatformat }}</strong>
+      </div></div>
+      <div class="col-4"><div class="card-sub text-center p-2">
+        <div class="minor">累计票数</div>
+        <strong>{{ vote_count }} 票</strong>
+      </div></div>
+    </div>
+    <div class="card-flat p-3 mb-3" style="border:1px solid var(--line);border-radius:12px">
+      <h6 class="mb-1">性格</h6>
+      <p class="body-text mb-0">{{ cat.personality|default:"性格温顺亲人" }}</p>
+    </div>
+    <a class="btn-main btn px-4" href="{% url 'vote' %}">给{{ cat.name }}投票</a>
+    <a class="btn-sub btn px-4 ms-2" href="{% url 'reserve' %}">预约来见它</a>
+  </div>
+</div>
+
+{% if related %}
+<div class="mt-4">
+  <strong class="body-text">同品种小伙伴</strong>
+  <div class="row g-3 mt-1">
+    {% for c in related %}
+    <div class="col-md-4">
+      <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none">
+      <div class="card-sub p-2 d-flex align-items-center gap-2">
+        {% if c.photo %}<img src="{{ c.photo.url }}" class="r-sub" style="width:56px;height:56px;object-fit:cover" alt="">{% endif %}
+        <strong class="text-dark small">{{ c.name }}</strong>
+      </div></a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

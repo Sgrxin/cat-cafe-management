@@ -1,0 +1,32 @@
+{% extends "shop/base.html" %}
+{% block title %}积分兑换 · 喵屋猫咖{% endblock %}
+{% block content %}
+<h5 class="fw-bold mb-1">积分兑换</h5>
+<p class="minor mb-3">我的可用积分：<span class="price" style="font-size:20px">{{ points }}</span> 分 · 消费1元累计1积分</p>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 justify-content-start">
+  {% for item in items %}
+  <div class="col">
+    <div class="card h-100">
+      <img src="{% static 'img/gift_placeholder.png' %}" class="card-img-top" alt="{{ item.gift.name }}" style="height:160px;object-fit:cover">
+      <div class="card-body text-center">
+        <strong class="text-dark">{{ item.gift.name }}</strong>
+        <p class="price mb-1">{{ item.gift.points_required }} 积分</p>
+        <p class="hint mb-2">库存 {{ item.gift.stock }}</p>
+        {% if not item.affordable and item.gift.stock > 0 %}
+          <button class="btn-main btn btn-sm w-100" disabled>还差 {{ item.short }} 分</button>
+        {% elif item.gift.stock < 1 %}
+          <button class="btn-main btn btn-sm w-100" disabled>已兑完</button>
+        {% else %}
+          <form method="post" action="{% url 'redeem_do' item.gift.id %}">
+            {% csrf_token %}
+            <button class="btn-main btn btn-sm w-100">立即兑换</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<p class="hint mt-3">兑换后到店出示会员名领取，积分不足时先去消费或签到攒积分</p>
+{% endblock %}

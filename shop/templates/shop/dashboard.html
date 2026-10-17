@@ -1,0 +1,67 @@
+{% extends "shop/base.html" %}
+{% block title %}数据看板 · 喵屋猫咖{% endblock %}
+{% block content %}
+<h3 class="mb-3">📊 经营数据看板（近14天）</h3>
+<div class="row g-3">
+  <div class="col-md-6"><div class="card"><div class="card-body">
+    <div id="sales" style="height:320px"></div>
+  </div></div></div>
+  <div class="col-md-6"><div class="card"><div class="card-body">
+    <div id="top" style="height:320px"></div>
+  </div></div></div>
+  <div class="col-md-6"><div class="card"><div class="card-body">
+    <div id="votes" style="height:320px"></div>
+  </div></div></div>
+  <div class="col-md-6"><div class="card"><div class="card-body">
+    <div id="seats" style="height:320px"></div>
+  </div></div></div>
+</div>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+<script>
+const palette = '#5b4636';
+function draw(id, option) {
+  const chart = echarts.init(document.getElementById(id));
+  chart.setOption(option);
+  window.addEventListener('resize', () => chart.resize());
+}
+fetch('/dashboard/api/sales/').then(r => r.json()).then(d => {
+  draw('sales', {
+    title: { text: '营业额趋势（元）', textStyle: { fontSize: 15 } },
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'category', data: d.labels.map(s => s.slice(5)) },
+    yAxis: { type: 'value' },
+    series: [{ data: d.values, type: 'line', smooth: true, areaStyle: {}, itemStyle: { color: palette } }]
+  });
+});
+fetch('/dashboard/api/top_products/').then(r => r.json()).then(d => {
+  draw('top', {
+    title: { text: '热销商品 TOP8（件数）', textStyle: { fontSize: 15 } },
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'value' },
+    yAxis: { type: 'category', data: d.labels },
+    series: [{ data: d.values, type: 'bar', itemStyle: { color: '#b08968' } }],
+    grid: { left: 110 }
+  });
+});
+fetch('/dashboard/api/cat_votes/').then(r => r.json()).then(d => {
+  draw('votes', {
+    title: { text: '猫咪人气榜（票数）', textStyle: { fontSize: 15 } },
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'value' },
+    yAxis: { type: 'category', data: d.labels },
+    series: [{ data: d.values, type: 'bar', itemStyle: { color: '#e8a87c' } }],
+    grid: { left: 80 }
+  });
+});
+fetch('/dashboard/api/seat_usage/').then(r => r.json()).then(d => {
+  draw('seats', {
+    title: { text: '工位使用率（预约次数）', textStyle: { fontSize: 15 } },
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'value' },
+    yAxis: { type: 'category', data: d.labels },
+    series: [{ data: d.values, type: 'bar', itemStyle: { color: '#8d6e63' } }],
+    grid: { left: 100 }
+  });
+});
+</script>
+{% endblock %}

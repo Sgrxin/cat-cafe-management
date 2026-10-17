@@ -1,0 +1,44 @@
+﻿{% extends "shop/base.html" %}
+{% block title %}商品菜单 · 喵屋猫咖{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 fw-bold">商品菜单</h5>
+  <span class="minor">价格均为单份，点单后到店取餐</span>
+</div>
+<ul class="nav nav-pills mb-4" style="gap:8px">
+  <li class="nav-item"><a class="nav-link {% if not sel_cat %}active{% endif %}" style="border-radius:8px" href="{% url 'menu' %}">全部</a></li>
+  <li class="nav-item"><a class="nav-link {% if sel_cat == 'drink' %}active{% endif %}" style="border-radius:8px" href="{% url 'menu' %}?category=drink">饮品</a></li>
+  <li class="nav-item"><a class="nav-link {% if sel_cat == 'dessert' %}active{% endif %}" style="border-radius:8px" href="{% url 'menu' %}?category=dessert">甜品小吃</a></li>
+  <li class="nav-item"><a class="nav-link {% if sel_cat == 'catfood' %}active{% endif %}" style="border-radius:8px" href="{% url 'menu' %}?category=catfood">猫粮猫用</a></li>
+  <li class="nav-item"><a class="nav-link {% if sel_cat == 'goods' %}active{% endif %}" style="border-radius:8px" href="{% url 'menu' %}?category=goods">周边文创</a></li>
+</ul>
+
+<div class="row g-3">
+  {% for p in products %}
+  <div class="col-md-4 col-lg-3">
+    <div class="card h-100">
+      {% if p.photo %}
+      <img src="{{ p.photo.url }}" class="card-img-top" alt="{{ p.name }}" style="height:160px;object-fit:cover">
+      {% endif %}
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-baseline">
+          <strong class="text-dark">{{ p.name }}</strong>
+          <span class="price">¥{{ p.price|floatformat }}</span>
+        </div>
+        <div class="mt-1 mb-2">
+          <span class="chip chip-cat">{{ p.get_category_display }}</span>
+          {% if p.name == '招牌猫爪拿铁' %}<span class="chip chip-sign">招牌</span>{% endif %}
+        </div>
+        {% if p.description %}<p class="hint mb-2" style="line-height:1.3">{{ p.description }}</p>{% endif %}
+        <form method="post" action="{% url 'order_create' p.id %}">
+          {% csrf_token %}
+          <button class="btn-main btn btn-sm w-100" {% if p.stock < 1 %}disabled{% endif %}>
+            {% if p.stock < 1 %}已售完{% else %}点单（模拟支付）{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

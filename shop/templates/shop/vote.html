@@ -1,0 +1,52 @@
+{% extends "shop/base.html" %}
+{% block title %}猫王投票 · 喵屋猫咖{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0">{{ event.title|default:"猫王评选" }}</h5>
+  <span class="minor">我的投票券：<span class="price">{{ tickets }}</span> 张（每笔消费赠1张）</span>
+</div>
+
+{% if ranked %}
+<div class="card r-main p-3 mb-4">
+  <strong class="body-text mb-2">当前票数排行</strong>
+  {% for v in ranked %}
+  <div class="d-flex align-items-center gap-2 py-1" style="border-bottom:1px solid var(--line)">
+    <span style="width:24px">{% if forloop.first %}🏆{% else %}{{ forloop.counter }}.{% endif %}</span>
+    <span class="body-text flex-grow-1">{{ v.cat__name }}（{{ v.cat__breed }}）</span>
+    <span class="chip {% if forloop.first %}chip-sign{% else %}chip-pend{% endif %}">{{ v.n }} 票</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="row g-3">
+  {% for c in cats %}
+  <div class="col-md-3">
+    <div class="card h-100">
+      {% if c.photo %}
+      <img src="{{ c.photo.url }}" class="card-img-top" alt="{{ c.name }}" style="height:96px;object-fit:cover">
+      {% else %}
+      <img src="{% static 'img/cat_placeholder.png' %}" class="card-img-top" alt="" style="height:96px;object-fit:cover">
+      {% endif %}
+      <div class="card-body text-center">
+        <strong class="text-dark">{{ c.name }}</strong>
+        {% if c.my_vote %}<span class="chip chip-ok ms-1">已投</span>{% endif %}
+        <p class="minor mb-1">{{ c.breed }}</p>
+        <p class="minor mb-2">{{ c.votes }} 票</p>
+        {% if c.my_vote %}
+          <button class="btn-sub btn btn-sm w-100" disabled>已投</button>
+        {% elif tickets < 1 %}
+          <button class="btn-sub btn btn-sm w-100" disabled>无投票券</button>
+        {% else %}
+          <form method="post" action="{% url 'vote_do' c.id %}">
+            {% csrf_token %}
+            <button class="btn-sub btn btn-sm w-100">投TA一票</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<p class="hint mt-3">每张投票券可投1票，同一只猫只能投1次；消费1笔获1张投票券</p>
+{% endblock %}
