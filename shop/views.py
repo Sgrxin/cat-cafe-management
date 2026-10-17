@@ -332,10 +332,20 @@ def member_center(request):
     checked = CheckInLog.objects.filter(
         user=request.user, created_at__date=timezone.localdate()).exists()
     checkin_days = CheckInLog.objects.filter(user=request.user).count()
+    pts = prof.points
+    if pts >= 800:
+        next_level, next_at, progress = "钻石铲屎官", 800, 100
+    elif pts >= 300:
+        next_level, next_at, progress = "钻石铲屎官", 800, min(100, int((pts - 300) / 5))
+    elif pts >= 100:
+        next_level, next_at, progress = "金牌猫奴", 300, int((pts - 100) / 2)
+    else:
+        next_level, next_at, progress = "银牌猫奴", 100, pts
     return render(request, "shop/me.html", {
         "prof": prof, "orders": orders, "reservations": reservations,
         "redemptions": redemptions, "logs": logs,
         "checked": checked, "checkin_days": checkin_days,
+        "next_level": next_level, "next_at": next_at, "progress": progress,
     })
 
 

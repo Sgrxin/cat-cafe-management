@@ -17,6 +17,15 @@
       </button>
     </form>
   </div>
+  <div class="px-3 pb-3">
+    <div class="d-flex justify-content-between text-white-50 small mb-1">
+      <span>当前：{{ prof.points }} 积分</span>
+      <span>距离「{{ next_level }}」还差 {{ next_at|floatformat }} 积分{% if prof.points >= 800 %}（已达成）{% endif %}</span>
+    </div>
+    <div style="background:rgba(255,255,255,.25);border-radius:10px;height:10px;overflow:hidden">
+      <div style="width:{{ progress }}%;height:100%;background:var(--cat-yellow);border-radius:10px"></div>
+    </div>
+  </div>
 </div>
 
 <div class="row g-3 mb-4">

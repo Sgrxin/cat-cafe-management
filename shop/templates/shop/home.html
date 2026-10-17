@@ -8,7 +8,7 @@
   <div class="gap-core">
 
     {% if user.is_authenticated and user.userprofile.role in 'staff,admin' %}
-    <div class="card r-main p-3">
+    <div class="card r-main p-3 reveal">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong>店员工作台</strong>
         <span class="minor">{{ today|date:"m月d日" }} 今天</span>
@@ -34,7 +34,7 @@
     {% endif %}
 
     <!-- 工位预约（主卡片） -->
-    <div class="card r-main p-3">
+    <div class="card r-main p-3 reveal">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
           <strong>工位预约</strong>
@@ -76,7 +76,7 @@
     </div>
 
     <!-- 猫咪精选（次级卡片） -->
-    <div class="card-sub p-3">
+    <div class="card-sub p-3 reveal">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong class="body-text">今天想见谁？</strong>
         <a class="btn-txt" href="{% url 'cats' %}">全部猫咪 →</a>
@@ -97,7 +97,7 @@
     </div>
 
     <!-- 店里卖什么（无框文字chip） -->
-    <div class="card-sub p-3">
+    <div class="card-sub p-3 reveal">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong class="body-text">店里卖什么</strong>
         <a class="btn-txt" href="{% url 'menu' %}">完整菜单 →</a>
@@ -137,7 +137,7 @@
 
     <!-- 猫王评选（次级小卡） -->
     {% if top_votes %}
-    <div class="card-sub p-2">
+    <div class="card-sub p-2 reveal">
       <div class="d-flex justify-content-between align-items-center mb-1">
         <strong class="body-text">猫王评选</strong>
         <a class="btn-txt" href="{% url 'vote' %}">投票 →</a>
@@ -154,7 +154,7 @@
 
     <!-- 公告 -->
     {% if announcements %}
-    <div class="card-sub p-2">
+    <div class="card-sub p-2 reveal">
       <strong class="small">店内公告</strong>
       {% for a in announcements %}
       <div class="mt-2">
@@ -176,7 +176,7 @@
       <a class="btn-sub btn btn-sm w-100" href="{% url 'login' %}">登录</a>
     </div>
     {% if announcements %}
-    <div class="card-sub p-2">
+    <div class="card-sub p-2 reveal">
       <strong class="small">店内公告</strong>
       {% for a in announcements %}
       <div class="body-text mt-2">{{ a.title }}</div>
@@ -196,7 +196,7 @@
   <div class="row g-3 mt-1">
     {% for r in reviews %}
     <div class="col-md-4">
-      <div class="card-sub p-3">
+      <div class="card-sub p-3 reveal">
         <div class="d-flex align-items-center gap-2 mb-1">
           <span class="rounded-circle text-center text-white" style="width:28px;height:28px;line-height:28px;background:var(--brand);font-size:13px">{{ r.user.username|first }}</span>
           <span class="small text-dark">{{ r.user.username }}</span>

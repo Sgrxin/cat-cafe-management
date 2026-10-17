@@ -1,4 +1,5 @@
 {% extends "shop/base.html" %}
+{% load static %}
 {% block title %}猫王投票 · 喵屋猫咖{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -11,7 +12,7 @@
   <strong class="body-text mb-2">当前票数排行</strong>
   {% for v in ranked %}
   <div class="d-flex align-items-center gap-2 py-1" style="border-bottom:1px solid var(--line)">
-    <span style="width:24px">{% if forloop.first %}🏆{% else %}{{ forloop.counter }}.{% endif %}</span>
+    <span style="width:24px;font-size:16px">{% if forloop.first %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}{{ forloop.counter }}.{% endif %}</span>
     <span class="body-text flex-grow-1">{{ v.cat__name }}（{{ v.cat__breed }}）</span>
     <span class="chip {% if forloop.first %}chip-sign{% else %}chip-pend{% endif %}">{{ v.n }} 票</span>
   </div>
