@@ -2,14 +2,22 @@
 {% load static %}
 {% block title %}积分兑换 · 喵屋猫咖{% endblock %}
 {% block content %}
-<h5 class="fw-bold mb-1">积分兑换</h5>
-<p class="minor mb-3">我的可用积分：<span class="price" style="font-size:20px">{{ points }}</span> 分 · 消费1元累计1积分</p>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <div>
+    <h5 class="fw-bold mb-0" style="font-size:20px">积分兑换</h5>
+    <div class="minor mt-1">消费1元累计1积分；100积分起兑；兑换后到店出示会员名领取</div>
+  </div>
+  <div class="card p-2 px-3 d-flex align-items-center gap-2" style="border-radius:10px">
+    <span class="minor">我的可用积分</span>
+    <span class="stat-num" style="font-size:26px">{{ points }}</span>
+  </div>
+</div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4 justify-content-start">
+<div class="row row-cols-1 row-cols-md-3 g-3 justify-content-start">
   {% for item in items %}
   <div class="col">
     <div class="card h-100">
-      <img src="{% static 'img/gift_placeholder.png' %}" class="card-img-top" alt="{{ item.gift.name }}" style="height:160px;object-fit:cover">
+      <img src="{% static 'img/gift_placeholder.png' %}" class="card-img-top" alt="{{ item.gift.name }}" loading="lazy" style="height:160px;object-fit:cover">
       <div class="card-body text-center">
         <strong class="text-dark">{{ item.gift.name }}</strong>
         <p class="price mb-1">{{ item.gift.points_required }} 积分</p>
@@ -27,7 +35,14 @@
       </div>
     </div>
   </div>
+  {% empty %}
+  <div class="col-12">
+    <div class="empty-state">
+      <i class="fa-solid fa-gift"></i>
+      <div class="t">礼品上架中</div>
+      <div class="d">先去消费或签到攒积分，礼品马上来</div>
+    </div>
+  </div>
   {% endfor %}
 </div>
-<p class="hint mt-3">兑换后到店出示会员名领取，积分不足时先去消费或签到攒积分</p>
 {% endblock %}

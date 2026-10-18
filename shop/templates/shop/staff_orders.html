@@ -18,7 +18,7 @@
         <td class="small">{{ o.user.username|default:"-" }}</td>
         <td class="small">{{ o.get_order_type_display }}</td>
         <td class="small">{% for i in o.items.all %}{{ i.product.name }} <span class="minor">×{{ i.quantity }}</span>{% endfor %}</td>
-        <td style="text-align:right" class="small">¥{{ o.total_amount|floatformat }}</td>
+        <td style="text-align:right" class="mono small">¥{{ o.total_amount|floatformat }}</td>
         <td><span class="chip {% if o.status == 'finished' %}chip-ok{% elif o.status == 'canceled' %}chip-off{% else %}chip-pend{% endif %}">{{ o.get_status_display }}</span></td>
         <td class="small">{{ o.created_at|date:"m-d H:i" }}</td>
         <td>
@@ -31,7 +31,13 @@
         </td>
       </tr>
     {% empty %}
-      <tr><td colspan="8" class="text-center minor py-4">暂时没有订单，开单后会显示在这里</td></tr>
+      <tr><td colspan="8">
+        <div class="empty-state">
+          <i class="fa-regular fa-receipt"></i>
+          <div class="t">暂时没有订单</div>
+          <div class="d">会员点单后，最近50笔会显示在这里</div>
+        </div>
+      </td></tr>
     {% endfor %}
     </tbody>
   </table>

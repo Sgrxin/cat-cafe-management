@@ -25,74 +25,71 @@
 .splash .btn-main{animation:fadeUp .7s 1.25s ease both;width:auto;padding:0 34px}
 .splash .skip-hint{font-size:12px;color:var(--ph);animation:fadeUp .6s 1.5s ease both}
 
-/* ===== Hero 首屏 ===== */
-.hero{position:relative;border-radius:24px;overflow:hidden;
-  background:linear-gradient(120deg,#f6ead9,#f3ded2 45%,#ecd6c4);
-  min-height:560px;display:flex;align-items:center}
-.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.6;pointer-events:none}
-.blob-a{width:420px;height:420px;background:#f2c9a0;top:-120px;right:-80px;animation:drift 16s ease-in-out infinite alternate}
-.blob-b{width:360px;height:360px;background:#e9c8c4;bottom:-140px;left:30%;animation:drift 20s ease-in-out infinite alternate-reverse}
-.blob-c{width:260px;height:260px;background:#dcd3f0;top:30%;right:36%;animation:drift 24s ease-in-out infinite alternate;animation-delay:-6s}
-@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}100%{transform:translate(-30px,20px) scale(.96)}}
+/* ===== Hero：中文主标 + 协调右图 ===== */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;
+  padding:44px 8px 40px}
+.hero-title{font-family:var(--font-hand);font-size:clamp(30px,3.6vw,44px);line-height:1.28;
+  color:var(--text);margin:0 0 16px;font-weight:bold}
+.hero-title .hl{color:var(--accent)}
+.hero-sub{font-size:15px;color:var(--ink-2);max-width:430px;margin-bottom:24px}
+.hero-photo{width:100%;max-width:440px;aspect-ratio:4/4.3;object-fit:cover;
+  border-radius:12px;box-shadow:0 2px 14px rgba(90,70,50,.14);display:block;
+  margin-left:auto;transform:rotate(1.6deg)}
+.hero-note{margin-top:10px;font-size:12px;color:var(--ink-3);text-align:right;max-width:440px;margin-left:auto}
 
-.hero-kicker{font-size:13px;letter-spacing:4px;color:var(--brand);font-weight:bold;margin-bottom:14px}
-.hero-title{font-family:var(--font-hand);font-size:clamp(34px,4.6vw,58px);line-height:1.22;color:var(--text);margin-bottom:18px}
-.hero-title .hl{color:var(--caramel-dark)}
-.hero-line{display:block;overflow:hidden}
-.hero-line span{display:inline-block}
-.hero-sub{font-size:15px;color:var(--muted);max-width:420px;margin-bottom:26px}
+/* 数据条：无底板 */
+.stat-strip{display:flex;gap:52px;flex-wrap:wrap;padding:22px 4px 6px}
+.stat-num{font-family:var(--font-hand);font-size:34px;font-weight:bold;color:var(--brand);line-height:1.1}
+.stat-num small{font-size:15px;color:var(--ink-3);margin-left:2px;font-weight:normal}
 
-.hero-photo-wrap{position:relative}
-.hero-photo{width:100%;max-width:520px;aspect-ratio:4/4.6;object-fit:cover;
-  border-radius:28px;transform:rotate(2.5deg);
-  box-shadow:0 24px 60px rgba(90,70,50,.28);display:block}
-@keyframes photoIn{from{opacity:0;transform:rotate(8deg) translateY(30px) scale(.94)}to{opacity:1;transform:rotate(2.5deg)}}
-.float-badge{position:absolute;background:rgba(255,253,249,.92);backdrop-filter:blur(6px);
-  border-radius:14px;padding:10px 16px;font-size:13px;font-weight:bold;color:var(--brand-deep);
-  box-shadow:0 8px 24px rgba(90,70,50,.18)}
-.float-badge i{color:var(--caramel);margin-right:6px}
-.fb-1{top:26px;left:-24px}
-.fb-2{bottom:34px;left:-40px}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+/* 公告：一条横向轻提示 */
+.notice-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.6);
+  backdrop-filter:blur(10px);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:8px;padding:9px 14px;margin:18px 0 6px;font-size:13px}
+.notice-bar b{color:var(--text);flex-shrink:0}
+.notice-bar span{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* 跑马灯 */
-.marquee{overflow:hidden;background:var(--brand);padding:13px 0;margin:30px 0 6px;border-radius:14px}
-.marquee-track{display:flex;gap:56px;width:max-content;animation:marquee 26s linear infinite;
-  font-family:var(--font-hand);font-size:15px;color:#f3e2c8;letter-spacing:2px;white-space:nowrap}
-.marquee-track span i{color:var(--cat-yellow);margin:0 14px;font-size:11px}
+/* 跑马灯：纯中文 */
+.marquee{overflow:hidden;background:var(--brown);padding:11px 0;margin:22px 0 4px;border-radius:8px}
+.marquee-track{display:flex;gap:52px;width:max-content;animation:marquee 26s linear infinite;
+  font-size:13px;color:#f3e2c8;letter-spacing:2px;white-space:nowrap}
+.marquee-track i{font-size:9px;margin:0 14px;opacity:.6}
 @keyframes marquee{to{transform:translateX(-50%)}}
 
-/* 统计数字条 */
-.stat-strip{display:flex;gap:44px;flex-wrap:wrap}
-.stat-num{font-family:var(--font-hand);font-size:36px;font-weight:bold;color:var(--brand)}
+/* 今天想见谁：统一等比网格 */
+.cat-cell img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block}
+.cat-cell{transition:transform .18s ease}
+.cat-cell:hover{transform:translateY(-3px)}
+.cat-cell .n{font-weight:600;font-size:14px;color:var(--text);margin-top:8px}
+.cat-cell .m{font-size:12px;color:var(--ink-3)}
 
+/* 评价墙：细分隔 */
+.review-col{border-top:1px solid var(--line);padding-top:14px}
+.review-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.review-ava{width:26px;height:26px;border-radius:50%;background:var(--brown);color:#fff;
+  font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+.review-col p{font-size:13px;color:var(--ink-2);line-height:1.6;margin:0}
+
+/* 座位可点选 */
+a.seat-link{text-decoration:none}
+a.seat-link .seat-dot{width:44px;height:32px;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+a.seat-link:hover .seat-dot{transform:translateY(-2px);box-shadow:0 3px 8px rgba(90,70,50,.15)}
+
+@media (max-width:991px){
+  .hero{grid-template-columns:1fr;gap:24px;padding-top:20px}
+  .hero-photo{margin:0 auto;max-width:380px}
+  .hero-note{text-align:center;margin-left:0;max-width:none}
+}
+/* 双栏功能区：窄屏降单列 */
+.grid-main{display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start}
 @media (max-width:1100px){
-  .hero{min-height:auto}
-  .hero-title{font-size:clamp(30px,5vw,44px)}
-  .float-badge{font-size:12px;padding:8px 12px}
+  .grid-main{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion: reduce){
-  .blob,.float-badge,.marquee-track,.splash .paw-ambient{animation:none!important}
+  .splash,.splash .paw-ambient,.marquee-track{animation:none!important}
   .splash{transition:none!important}
-  .splash.leaving{transform:none}
   .splash-cat,.splash-meow,.splash-sub,.splash-quote,.splash .btn-main,.splash .skip-hint{animation:none!important;opacity:1}
-  body.entered .hero-kicker,body.entered .hero-line span,body.entered .hero-sub,
-  body.entered .hero .btn,body.entered .hero-photo,body.entered .float-badge,
-  body.entered .stat-strip{animation:none!important;opacity:1!important}
 }
-
-/* Hero 入场：开屏结束由 body.entered 触发 */
-.hero-kicker,.hero-sub,.hero .btn,.hero-photo,.float-badge,.stat-strip{opacity:0}
-body.entered .hero-kicker{animation:fadeUp .6s ease both}
-body.entered .hero-line span{animation:riseIn .8s cubic-bezier(.2,.7,.3,1) both}
-body.entered .hero-line:nth-of-type(2) span{animation-delay:.12s}
-body.entered .hero-sub{animation:fadeUp .6s .3s ease both}
-body.entered .hero .btn{animation:fadeUp .6s .4s ease both}
-body.entered .hero-photo{animation:photoIn 1s .25s cubic-bezier(.2,.7,.3,1) both}
-body.entered .float-badge{animation:bob 5s ease-in-out infinite, fadeUp .6s .7s ease both}
-body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
-@keyframes riseIn{from{transform:translateY(115%);opacity:0}to{transform:none;opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 </style>
 {% endblock %}
 
@@ -132,79 +129,69 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
 
 <!-- ===== HERO ===== -->
 <section class="hero">
-  <div class="blob blob-a"></div><div class="blob blob-b"></div><div class="blob blob-c"></div>
-  <div class="row g-0 align-items-center position-relative w-100">
-    <div class="col-lg-6 ps-5 pe-4 py-5">
-      <div class="hero-kicker">MEOW HOUSE · CAT CAFE</div>
-      <h1 class="hero-title">
-        <span class="hero-line"><span>一杯咖啡的时间</span></span>
-        <span class="hero-line"><span>一群<span class="hl">毛孩子</span>的陪伴</span></span>
-      </h1>
-      <p class="hero-sub">22只持证上岗的猫店员，30款精选好物，8间主题包间——在喵屋，把一个下午过成自己喜欢的样子。</p>
-      <div class="d-flex gap-3 flex-wrap">
-        <a class="btn-main btn px-4" href="{% url 'cats' %}"><i class="fa-solid fa-paw me-2"></i>看看猫店员</a>
-        <a class="btn-sub btn px-4" href="{% url 'reserve' %}"><i class="fa-regular fa-calendar-check me-2"></i>预约工位</a>
-      </div>
-      <div class="stat-strip mt-5">
-        <div><div class="stat-num" data-count="{{ cats_count }}">0</div><div class="minor">在岗猫店员</div></div>
-        <div><div class="stat-num" data-count="{{ seats_count }}">0</div><div class="minor">主题工位</div></div>
-        <div><div class="stat-num" data-count="{{ products_count }}">0</div><div class="minor">精选好物</div></div>
-        <div><div class="stat-num" data-count="{{ reviews_count }}">0</div><div class="minor">会员评价</div></div>
-      </div>
+  <div>
+    <h1 class="hero-title">在喵屋，喝杯咖啡，<span class="hl">撸只猫</span></h1>
+    <p class="hero-sub">22只持证上岗的猫店员，30款精选好物，8间主题包间。挑一个靠窗的位子，把下午过成自己喜欢的样子。</p>
+    <div class="d-flex gap-2 flex-wrap">
+      <a class="btn-main btn px-4" href="{% url 'cats' %}">看看猫店员</a>
+      <a class="btn-sub btn px-4" href="{% url 'reserve' %}">预约工位</a>
     </div>
-    <div class="col-lg-6 d-flex justify-content-center py-4 position-relative">
-      <div class="hero-photo-wrap">
-        <img src="/media/cats/cat_05.jpg" class="hero-photo" alt="猫店员">
-        <div class="float-badge fb-1"><i class="fa-solid fa-paw"></i>22只猫店员在岗</div>
-        <div class="float-badge fb-2"><i class="fa-solid fa-mug-hot"></i>30款精选好物</div>
-      </div>
+    <div class="stat-strip">
+      <div><div class="stat-num">{{ cats_count }}</div><div class="minor">在岗猫店员</div></div>
+      <div><div class="stat-num">{{ seats_count }}</div><div class="minor">主题工位</div></div>
+      <div><div class="stat-num">{{ products_count }}</div><div class="minor">精选好物</div></div>
+      <div><div class="stat-num">{{ reviews_count }}</div><div class="minor">会员评价</div></div>
     </div>
+  </div>
+  <div>
+    <img src="/media/cats/cat_05.jpg" class="hero-photo" alt="猫店员">
+    <div class="hero-note">摄于喵屋大厅 · 猫店员「狸奴」值班中</div>
   </div>
 </section>
 
-<!-- 跑马灯分隔带 -->
+<!-- 跑马灯 -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>CAT CAFE<i class="fa-solid fa-paw"></i>撸猫<i class="fa-solid fa-paw"></i>精品咖啡<i class="fa-solid fa-paw"></i>甜品小吃<i class="fa-solid fa-paw"></i>猫王评选<i class="fa-solid fa-paw"></i>工位预约<i class="fa-solid fa-paw"></i>积分兑换<i class="fa-solid fa-paw"></i></span>
-    <span>CAT CAFE<i class="fa-solid fa-paw"></i>撸猫<i class="fa-solid fa-paw"></i>精品咖啡<i class="fa-solid fa-paw"></i>甜品小吃<i class="fa-solid fa-paw"></i>猫王评选<i class="fa-solid fa-paw"></i>工位预约<i class="fa-solid fa-paw"></i>积分兑换<i class="fa-solid fa-paw"></i></span>
+    <span>撸猫<i class="fa-solid fa-paw"></i>精品咖啡<i class="fa-solid fa-paw"></i>甜品小吃<i class="fa-solid fa-paw"></i>猫王评选<i class="fa-solid fa-paw"></i>工位预约<i class="fa-solid fa-paw"></i>积分兑换<i class="fa-solid fa-paw"></i></span>
+    <span>撸猫<i class="fa-solid fa-paw"></i>精品咖啡<i class="fa-solid fa-paw"></i>甜品小吃<i class="fa-solid fa-paw"></i>猫王评选<i class="fa-solid fa-paw"></i>工位预约<i class="fa-solid fa-paw"></i>积分兑换<i class="fa-solid fa-paw"></i></span>
   </div>
 </div>
 
-<!-- 公告 -->
+<!-- 公告：一条轻提示 -->
 {% if announcements %}
-<div class="d-flex flex-wrap gap-2 mt-4">
-  {% for a in announcements %}
-  <div class="card-sub px-3 py-2 d-flex align-items-center gap-2">
-    <i class="fa-solid fa-bullhorn" style="color:var(--caramel)"></i>
-    <strong class="small text-dark">{{ a.title }}</strong>
-    <span class="hint">{{ a.content|truncatechars:46 }}</span>
-  </div>
-  {% endfor %}
+{% for a in announcements %}
+{% if forloop.first %}
+<div class="notice-bar">
+  <i class="fa-solid fa-bullhorn" style="color:var(--accent)"></i>
+  <b>{{ a.title }}</b>
+  <span>{{ a.content }}</span>
 </div>
+{% endif %}
+{% endfor %}
 {% endif %}
 
 <!-- ===== 功能区 ===== -->
-<div style="display:grid;grid-template-columns:1fr 370px;gap:28px;align-items:start" class="mt-4">
+<div class="grid-main mt-4">
   <div class="gap-core">
     {% if user.is_authenticated and user.userprofile.role in 'staff,admin' %}
-    <div class="card r-main p-3">
+    <div class="card p-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong>店员工作台</strong>
         <span class="minor">{{ today|date:"m月d日" }} 今天</span>
       </div>
-      <div class="d-flex gap-5">
+      <div class="d-flex gap-5 flex-wrap">
         <div>
-          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ staff_today_orders }}</div>
+          <div class="stat-num" style="font-size:28px">{{ staff_today_orders }}</div>
           <div class="minor">今日订单</div>
           <a class="btn-txt" href="{% url 'staff_orders' %}">订单管理 →</a>
         </div>
         <div>
-          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ staff_pending_redeem }}</div>
+          <div class="stat-num" style="font-size:28px">{{ staff_pending_redeem }}</div>
           <div class="minor">待核销兑换</div>
           <a class="btn-txt" href="{% url 'staff_redemptions' %}">去核销 →</a>
         </div>
         <div>
-          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ cats_count }}</div>
+          <div class="stat-num" style="font-size:28px">{{ cats_count }}</div>
           <div class="minor">在岗猫咪</div>
           <a class="btn-txt" href="{% url 'cats' %}">查看 →</a>
         </div>
@@ -212,11 +199,11 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
     </div>
     {% endif %}
 
-    <div class="card r-main p-3">
+    <div class="card p-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
           <strong>工位预约</strong>
-          <span class="module-sub ms-2">大厅 12 席 / 主题包间 8 间</span>
+          <span class="module-sub ms-2">大厅 12 席 / 主题包间 8 间 · 点击座位直接去预约</span>
         </div>
         <a class="btn-main btn btn-sm" href="{% url 'reserve' %}">去预约</a>
       </div>
@@ -226,24 +213,24 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
         {{ user_upcoming.seat.name }}，请提前10分钟到店
       </div>
       {% endif %}
-      <div class="row g-2">
-        <div class="col-md-6">
+      <div class="row row-cols-1 row-cols-sm-2 g-2">
+        <div class="col">
           <div class="module-sub mb-1">大厅散座</div>
           <div class="d-flex flex-wrap gap-1">
             {% for s in hall_seats %}
-            <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}" title="{{ s.name }}{% if s.today_n >= 4 %} 已满{% else %} 可预约{% endif %}">
-              {{ s.name|cut:"大厅" }}号
-            </span>
+            <a class="seat-link" href="{% url 'reserve' %}" title="{{ s.name }}{% if s.today_n >= 4 %} 今日已满{% else %} 可预约{% endif %}">
+              <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}">{{ s.name|cut:"大厅"|cut:"号" }}号</span>
+            </a>
             {% endfor %}
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col">
           <div class="module-sub mb-1">主题包间</div>
           <div class="d-flex flex-wrap gap-1">
             {% for s in room_seats %}
-            <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}" title="{{ s.name }}">
-              {{ s.name|cut:"猫屋包间" }}
-            </span>
+            <a class="seat-link" href="{% url 'reserve' %}" title="{{ s.name }}">
+              <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}">{{ s.name|cut:"猫屋包间" }}</span>
+            </a>
             {% endfor %}
           </div>
         </div>
@@ -256,15 +243,13 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
         <strong class="body-text">今天想见谁？</strong>
         <a class="btn-txt" href="{% url 'cats' %}">全部猫咪 →</a>
       </div>
-      <div class="row g-3">
+      <div class="row row-cols-2 row-cols-md-4 g-3">
         {% for c in cats %}
-        <div class="{% if forloop.first %}col-md-6{% else %}col-md-2{% endif %}">
-          <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none text-center d-block">
-            <div class="img-zoom r-sub">
-              {% if c.photo %}<img src="{{ c.photo.url }}" class="w-100" alt="{{ c.name }}" style="height:{% if forloop.first %}240{% else %}150{% endif %}px;object-fit:cover">{% endif %}
-            </div>
-            <div class="small text-dark mt-1">{{ c.name }}</div>
-            <div class="hint">{{ c.personality|cut:"，"|truncatechars:6 }}</div>
+        <div class="col">
+          <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none cat-cell d-block">
+            {% if c.photo %}<img src="{{ c.photo.url }}" alt="{{ c.name }}" loading="lazy">{% endif %}
+            <div class="n">{{ c.name }}</div>
+            <div class="m">{{ c.personality|cut:"，"|truncatechars:8 }}</div>
           </a>
         </div>
         {% endfor %}
@@ -274,15 +259,14 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
 
   <div class="gap-sub">
     {% if user.is_authenticated %}
-    <div class="card r-main p-3" style="min-height:270px">
+    <div class="card p-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong>{{ user.username }}</strong>
-        <span class="lvl"><i class="bi {{ user.userprofile.level_icon }} me-1"></i>{{ user.userprofile.level }}</span>
+        <span class="lvl">{{ user.userprofile.level }}</span>
       </div>
       <hr class="my-2" style="border-color:var(--line)">
       <div class="d-flex justify-content-between body-text"><span>积分</span><span>{{ user.userprofile.points }}</span></div>
       <div class="d-flex justify-content-between body-text"><span>储值余额</span><span>¥{{ user.userprofile.balance|floatformat }}</span></div>
-      <div class="d-flex justify-content-between body-text"><span>投票券</span><span>{{ user.userprofile.vote_tickets }} 张</span></div>
       <div class="d-flex justify-content-between body-text mb-2">
         <span>今日签到</span>
         <form method="post" action="{% url 'checkin' %}" class="m-0">
@@ -323,7 +307,7 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
     {% endif %}
 
     {% else %}
-    <div class="card r-main p-3" style="min-height:270px">
+    <div class="card p-3">
       <strong>成为喵屋会员</strong>
       <hr class="my-2" style="border-color:var(--line)">
       <p class="body-text mb-2">注册即享：工位预约、消费积分、积分兑换、猫王投票</p>
@@ -346,24 +330,24 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
   </div>
 </div>
 
-<!-- 评价墙 -->
+<!-- 评价墙：细分隔 3 列 -->
 {% if reviews %}
 <div class="mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-2">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <strong class="body-text">喵友们怎么说</strong>
     <a class="btn-txt" href="{% url 'about' %}">更多评价 →</a>
   </div>
-  <div class="row g-3">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for r in reviews %}
-    <div class="col-md-4">
-      <div class="card-sub p-3">
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <span class="rounded-circle text-center text-white" style="width:28px;height:28px;line-height:28px;background:var(--brand);font-size:13px">{{ r.user.username|first }}</span>
+    <div class="col">
+      <div class="review-col">
+        <div class="review-head">
+          <span class="review-ava">{{ r.user.username|first }}</span>
           <span class="small text-dark">{{ r.user.username }}</span>
           <span class="hint ms-auto">{{ r.created_at|date:"m-d" }}</span>
         </div>
-        <span class="text-warning small">{% for i in "12345"|make_list %}{% if forloop.counter <= r.stars %}★{% else %}☆{% endif %}{% endfor %}</span>
-        <p class="small mb-0" style="line-height:1.4">{{ r.content }}</p>
+        <div class="small mb-1" style="color:var(--warn)">{% for i in "12345"|make_list %}{% if forloop.counter <= r.stars %}★{% else %}☆{% endif %}{% endfor %}</div>
+        <p>{{ r.content }}</p>
       </div>
     </div>
     {% endfor %}
@@ -397,5 +381,3 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
 })();
 </script>
 {% endblock %}
-
-

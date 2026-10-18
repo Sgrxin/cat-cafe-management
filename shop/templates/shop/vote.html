@@ -4,42 +4,44 @@
 
 {% block extra_css %}
 <style>
-/* ===== 猫王评选（vote-pink 豆沙粉模块） ===== */
-.vote-head{background:linear-gradient(150deg,#F9E9E8,#F5DBD9);border-radius:14px;
-  padding:18px 26px;margin-bottom:22px;border:1px solid #F0CFCB}
-.vote-head h4{font-family:var(--font-hand);color:#b05555;margin:0;font-weight:bold}
-.vote-head p{margin:4px 0 0;font-size:13px;color:#bb7d78}
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:22px;margin:26px 0 8px}
-.podium-slot{text-align:center;width:200px}
-.podium-slot img{width:110px;height:110px;border-radius:50%;object-fit:cover;
-  border:4px solid #fff;box-shadow:0 6px 18px rgba(176,85,85,.25)}
-.podium-slot .p-name{font-family:var(--font-hand);font-size:18px;color:var(--text);margin-top:8px}
+/* ===== 猫王评选：领奖台 + 候选人进度条 ===== */
+.vote-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.vote-toolbar h4{font-family:var(--font-hand);color:#b05555;margin:0;font-weight:bold;font-size:22px}
+.vote-toolbar .sub{font-size:13px;color:var(--ink-3);margin-top:2px}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:22px;margin:20px 0 6px}
+.podium-slot{text-align:center;width:190px}
+.podium-slot img{width:104px;height:104px;border-radius:50%;object-fit:cover;
+  border:4px solid #fff;box-shadow:0 4px 14px rgba(176,85,85,.22)}
+.podium-slot .p-name{font-family:var(--font-hand);font-size:17px;color:var(--text);margin-top:8px}
 .podium-slot .p-votes{font-size:13px;color:#b05555;font-weight:bold}
-.podium-base{border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-hand);color:#fff;font-size:22px;margin-top:10px}
-.p1 .podium-base{height:88px;background:linear-gradient(180deg,#D98E8E,#C47676)}
-.p2 .podium-base{height:62px;background:linear-gradient(180deg,#E5B1AC,#D99C96)}
-.p3 .podium-base{height:48px;background:linear-gradient(180deg,#EBCCC4,#E0B8AF)}
-.p1 img{width:132px;height:132px;border-color:#F3D9A8}
-.p1 .p-name{font-size:21px}
+.podium-base{border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-hand);color:#fff;font-size:20px;margin-top:10px}
+.p1 .podium-base{height:82px;background:linear-gradient(180deg,#D98E8E,#C47676)}
+.p2 .podium-base{height:58px;background:linear-gradient(180deg,#E5B1AC,#D99C96)}
+.p3 .podium-base{height:44px;background:linear-gradient(180deg,#EBCCC4,#E0B8AF)}
+.p1 img{width:126px;height:126px;border-color:#F3D9A8}
+.p1 .p-name{font-size:20px}
 .cand-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;
   border:1px solid var(--line);border-radius:10px}
 .cand-row img{width:52px;height:52px;border-radius:8px;object-fit:cover}
 .cand-row .grow{flex:1;min-width:0}
+.vote-bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:5px}
+.vote-bar i{display:block;height:100%;background:var(--accent);border-radius:3px;width:0;
+  transition:width .8s cubic-bezier(.16,1,.3,1)}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="vote-head d-flex justify-content-between align-items-center flex-wrap gap-2">
+<div class="vote-toolbar">
   <div>
     <h4>{{ event.title|default:"猫王评选" }}</h4>
-    <p>月底票数最高者当选本月猫王，堂食区挂照片一个月</p>
+    <div class="sub">月底票数最高者当选本月猫王，堂食区挂照片一个月</div>
   </div>
   <span class="chip chip-vote">我的投票券：{{ tickets }} 张（每笔消费赠1张）</span>
 </div>
 
 {% if ranked %}
-<div class="card r-main p-3 mb-4" style="background:#fff">
+<div class="card p-3 mb-4">
   <strong class="body-text mb-1">当前三强</strong>
   <div class="podium">
     {% for v in ranked|slice:":3" %}
@@ -59,16 +61,17 @@
   <div class="col-md-6">
     <div class="cand-row">
       {% if c.photo %}
-      <img src="{{ c.photo.url }}" alt="{{ c.name }}">
+      <img src="{{ c.photo.url }}" alt="{{ c.name }}" loading="lazy">
       {% else %}
-      <img src="{% static 'img/cat_placeholder.png' %}" alt="{{ c.name }}">
+      <img src="{% static 'img/cat_placeholder.png' %}" alt="{{ c.name }}" loading="lazy">
       {% endif %}
       <div class="grow">
         <div class="d-flex align-items-center gap-1">
           <strong class="body-text text-dark">{{ c.name }}</strong>
           {% if c.my_vote %}<span class="chip chip-ok">已投</span>{% endif %}
+          <span class="hint ms-auto">{{ c.votes }} 票</span>
         </div>
-        <div class="hint">{{ c.breed }} · {{ c.votes }} 票</div>
+        <div class="vote-bar" data-votes="{{ c.votes }}"><i></i></div>
       </div>
       {% if c.my_vote %}
         <button class="btn-sub btn btn-sm" disabled>已投</button>
@@ -77,7 +80,7 @@
       {% else %}
         <form method="post" action="{% url 'vote_do' c.id %}" class="m-0">
           {% csrf_token %}
-          <button class="btn-main btn btn-sm">投TA一票</button>
+          <button class="btn-main btn btn-sm">投TA</button>
         </form>
       {% endif %}
     </div>
@@ -85,4 +88,20 @@
   {% endfor %}
 </div>
 <p class="hint mt-3">每张投票券可投1票，同一只猫只能投1次；消费1笔获1张投票券</p>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 票数进度条：以最高票为满宽
+(function () {
+  var bars = document.querySelectorAll('.vote-bar[data-votes]');
+  var max = 0;
+  bars.forEach(function (b) { max = Math.max(max, parseInt(b.dataset.votes || '0', 10)); });
+  bars.forEach(function (b) {
+    var v = parseInt(b.dataset.votes || '0', 10);
+    var pct = max > 0 ? Math.max(v / max * 100, v > 0 ? 6 : 0) : 0;
+    setTimeout(function () { b.querySelector('i').style.width = pct + '%'; }, 300);
+  });
+})();
+</script>
 {% endblock %}

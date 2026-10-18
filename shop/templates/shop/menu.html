@@ -4,37 +4,38 @@
 
 {% block extra_css %}
 <style>
-/* ===== 菜单板风格（menu-orange 焦糖橙模块） ===== */
-.menu-board{background:linear-gradient(160deg,#8a6a50,#6d5240);border-radius:14px;
-  color:#f3e2c8;padding:26px 30px;position:relative;overflow:hidden;margin-bottom:22px}
-.menu-board::after{content:"MENU";position:absolute;right:22px;bottom:6px;
-  font-family:var(--font-hand);font-size:54px;opacity:.1;letter-spacing:6px}
-.menu-board h4{font-family:var(--font-hand);font-weight:bold;letter-spacing:3px;margin:0}
-.menu-board p{margin:6px 0 0;font-size:13px;opacity:.75}
-.menu-tabs{gap:8px;border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:18px}
-.menu-tabs .nav-link{border-radius:16px;font-size:14px;color:var(--brand);
-  border:1px solid var(--line);background:#fff;padding:4px 16px}
-.menu-tabs .nav-link:hover{border-color:var(--caramel);color:var(--caramel-dark)}
-.menu-tabs .nav-link.active{background:var(--caramel);border-color:var(--caramel);color:#fff}
-
-.menu-item .menu-photo{border-radius:10px 10px 0 0;height:150px;object-fit:cover;width:100%}
-.menu-row{display:flex;align-items:baseline;gap:6px}
-.menu-row .dots{flex:1;border-bottom:1px dotted #cbb9a8;transform:translateY(-4px)}
+/* ===== 菜单：工具栏 + 方图商品卡 ===== */
+.menu-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.menu-toolbar h4{font-family:var(--font-hand);color:var(--brown);margin:0;font-weight:bold;font-size:22px}
+.menu-toolbar .sub{font-size:13px;color:var(--ink-3);margin-top:2px}
+.menu-tabs{gap:8px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:18px}
+.menu-tabs .nav-link{border-radius:8px;font-size:14px;color:var(--ink-2);
+  border:1px solid transparent;padding:4px 14px}
+.menu-tabs .nav-link:hover{color:var(--accent);background:var(--accent-soft)}
+.menu-tabs .nav-link.active{background:var(--accent);color:#fff}
+.menu-item .menu-photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
 .menu-item .card-body{padding:12px 14px 14px}
-.chip-drink{background:var(--menu-orange-bg);color:var(--caramel-dark)}
+.menu-item .mi-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.menu-item .mi-name{font-weight:600;color:var(--text);font-size:15px}
+.menu-item .mi-desc{font-size:12px;color:var(--ink-3);margin:4px 0 10px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.menu-item .mi-foot{display:flex;justify-content:space-between;align-items:center}
+.chip-drink{background:var(--menu-orange-bg);color:#a96a28}
 .chip-dessert{background:var(--vote-pink-bg);color:#b05555}
 .chip-catfood{background:var(--reserve-green-bg);color:#5E8A66}
-.chip-goods{background:var(--point-brown-bg);color:var(--brand)}
+.chip-goods{background:var(--point-brown-bg);color:var(--brown)}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="menu-board">
-  <h4>喵屋菜单</h4>
-  <p>价格均为单份 · 点单后到吧台取餐 · 储值会员自动享会员日优惠</p>
+<div class="menu-toolbar">
+  <div>
+    <h4>喵屋菜单</h4>
+    <div class="sub">价格均为单份 · 点单后到吧台取餐 · 会员日第二杯半价</div>
+  </div>
 </div>
 
-<ul class="nav nav-pills menu-tabs">
+<ul class="nav menu-tabs">
   <li class="nav-item"><a class="nav-link {% if not sel_cat %}active{% endif %}" href="{% url 'menu' %}">全部</a></li>
   <li class="nav-item"><a class="nav-link {% if sel_cat == 'drink' %}active{% endif %}" href="{% url 'menu' %}?category=drink">饮品</a></li>
   <li class="nav-item"><a class="nav-link {% if sel_cat == 'dessert' %}active{% endif %}" href="{% url 'menu' %}?category=dessert">甜品小吃</a></li>
@@ -42,31 +43,40 @@
   <li class="nav-item"><a class="nav-link {% if sel_cat == 'goods' %}active{% endif %}" href="{% url 'menu' %}?category=goods">周边文创</a></li>
 </ul>
 
-<div class="row g-3">
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
   {% for p in products %}
-  <div class="col-md-4 col-lg-3">
+  <div class="col">
     <div class="card h-100 menu-item">
       {% if p.photo %}
-      <img src="{{ p.photo.url }}" class="menu-photo" alt="{{ p.name }}">
+      <img src="{{ p.photo.url }}" class="menu-photo" alt="{{ p.name }}" loading="lazy">
       {% endif %}
       <div class="card-body">
-        <div class="menu-row">
-          <strong class="text-dark">{{ p.name }}</strong>
-          <span class="dots"></span>
+        <div class="mi-row">
+          <span class="mi-name">{{ p.name }}</span>
           <span class="price">¥{{ p.price|floatformat }}</span>
         </div>
-        <div class="mt-1 mb-2">
+        <div class="mi-desc">{% if p.description %}{{ p.description }}{% else %}{{ p.get_category_display }}{% endif %}</div>
+        <div class="mi-foot">
           <span class="chip chip-{{ p.category }}">{{ p.get_category_display }}</span>
-          {% if p.name == '招牌猫爪拿铁' %}<span class="chip chip-sign">招牌</span>{% endif %}
+          <form method="post" action="{% url 'order_create' p.id %}" class="m-0">
+            {% csrf_token %}
+            {% if p.stock < 1 %}
+            <button class="btn-sub btn btn-sm" disabled>已售完</button>
+            {% else %}
+            <button class="btn-main btn btn-sm px-3">点单</button>
+            {% endif %}
+          </form>
         </div>
-        {% if p.description %}<p class="hint mb-2" style="line-height:1.3">{{ p.description }}</p>{% endif %}
-        <form method="post" action="{% url 'order_create' p.id %}">
-          {% csrf_token %}
-          <button class="btn-main btn btn-sm w-100" {% if p.stock < 1 %}disabled{% endif %}>
-            {% if p.stock < 1 %}已售完{% else %}点单（模拟支付）{% endif %}
-          </button>
-        </form>
       </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12">
+    <div class="empty-state">
+      <i class="fa-regular fa-mug-hot"></i>
+      <div class="t">这个分类暂时没有商品</div>
+      <div class="d">看看其他分类，或来杯招牌猫爪拿铁</div>
+      <a class="btn-sub btn btn-sm" href="{% url 'menu' %}">看全部商品</a>
     </div>
   </div>
   {% endfor %}

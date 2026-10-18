@@ -22,7 +22,13 @@
         </td>
       </tr>
     {% empty %}
-      <tr><td colspan="5" class="text-center minor py-4">暂时没有待发放的兑换</td></tr>
+      <tr><td colspan="5">
+        <div class="empty-state">
+          <i class="fa-solid fa-box-open"></i>
+          <div class="t">暂时没有待发放的兑换</div>
+          <div class="d">会员到店出示兑换码核销后，记录会显示在这里</div>
+        </div>
+      </td></tr>
     {% endfor %}
     </tbody>
   </table>
