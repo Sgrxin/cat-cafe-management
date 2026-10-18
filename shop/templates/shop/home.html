@@ -8,8 +8,8 @@
 .splash{position:fixed;inset:0;z-index:3000;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:18px;text-align:center;
   background:linear-gradient(150deg,#FBF6EE,#F6E8E0 55%,#F0DCD2);
-  transition:transform .75s cubic-bezier(.7,0,.84,0),opacity .6s ease}
-.splash.leaving{transform:translateY(-100%);opacity:.4}
+  transition:opacity .55s ease,transform .55s ease}
+.splash.leaving{opacity:0;transform:scale(1.03);pointer-events:none}
 .splash .paw-ambient{position:absolute;font-size:26px;opacity:.12;animation:pawfloat 7s ease-in-out infinite}
 .splash .paw-ambient:nth-of-type(odd){animation-delay:-3s}
 @keyframes pawfloat{0%,100%{transform:translateY(0) rotate(-12deg)}50%{transform:translateY(-26px) rotate(14deg)}}
@@ -73,6 +73,12 @@
 }
 @media (prefers-reduced-motion: reduce){
   .blob,.float-badge,.marquee-track,.splash .paw-ambient{animation:none!important}
+  .splash{transition:none!important}
+  .splash.leaving{transform:none}
+  .splash-cat,.splash-meow,.splash-sub,.splash-quote,.splash .btn-main,.splash .skip-hint{animation:none!important;opacity:1}
+  body.entered .hero-kicker,body.entered .hero-line span,body.entered .hero-sub,
+  body.entered .hero .btn,body.entered .hero-photo,body.entered .float-badge,
+  body.entered .stat-strip{animation:none!important;opacity:1!important}
 }
 
 /* Hero 入场：开屏结束由 body.entered 触发 */
@@ -119,7 +125,7 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
         splash.style.display = 'none';
         document.body.classList.add('entered');
         if (window.__pageIn) window.__pageIn();
-      }, 700);
+      }, 580);
     });
   })();
 </script>

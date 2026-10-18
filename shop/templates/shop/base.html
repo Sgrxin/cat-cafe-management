@@ -60,14 +60,9 @@ h1,h2{font-weight:bold}
   background:linear-gradient(90deg,var(--caramel),#eebd7a);border-radius:0 3px 3px 0;
   box-shadow:0 0 10px rgba(224,145,61,.55)}
 
-/* 页面转场幕布 */
-#pageCurtain{position:fixed;inset:0;z-index:4000;pointer-events:none;
-  background:linear-gradient(150deg,#6d5240,#7A5C48 60%,#8a6a50);
-  transform:translateY(101%);display:flex;align-items:center;justify-content:center;overflow:hidden}
-#pageCurtain::after{content:"🐾";position:absolute;font-size:150px;opacity:.08;right:8%;bottom:6%;transform:rotate(-14deg)}
-#pageCurtain .curtain-mark{font-family:var(--font-hand);color:#f3e2c8;font-size:30px;letter-spacing:8px;opacity:0;transition:opacity .3s .1s}
-#pageCurtain.cover{transform:translateY(0);transition:transform .42s cubic-bezier(.65,0,.35,1);pointer-events:auto}
-#pageCurtain.cover .curtain-mark{opacity:.9}
+/* 页面离开轻渐出（无整屏滑动） */
+body.nav-out #pageBody{opacity:0;transform:scale(.995)}
+#pageBody{transition:opacity .18s ease,transform .18s ease}
 
 /* 导航：滚动后毛玻璃 */
 .nav-warm{background:var(--brand);height:56px;box-shadow:0 2px 10px rgba(90,70,50,.25);
@@ -213,7 +208,8 @@ a:hover .img-zoom img,.card:hover .img-zoom img{transform:scale(1.05)}
 
 @media (prefers-reduced-motion: reduce){
   .ambient i{animation:none!important}
-  #pageCurtain{display:none}
+  #pageBody{transition:none!important}
+  body.nav-out #pageBody{transform:none}
   .page-in > *{animation:none;opacity:1;transform:none}
   .reveal{opacity:1;transform:none;filter:none;transition:none}
 }
@@ -223,7 +219,6 @@ a:hover .img-zoom img,.card:hover .img-zoom img{transform:scale(1.05)}
 <body>
 <div class="ambient" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
 <div id="scrollProgress" aria-hidden="true"></div>
-<div id="pageCurtain" aria-hidden="true"><span class="curtain-mark">喵屋猫咖</span></div>
 
 <nav class="navbar navbar-expand-lg nav-warm sticky-top">
   <div class="container">
@@ -309,12 +304,11 @@ a:hover .img-zoom img,.card:hover .img-zoom img{transform:scale(1.05)}
 <script>
 /* ===== v5 高级感交互系统 ===== */
 (function () {
-  var curtain = document.getElementById('pageCurtain');
   var bar = document.getElementById('scrollProgress');
   var nav = document.querySelector('.nav-warm');
   var pageBody = document.getElementById('pageBody');
 
-  /* 1) 页面转场：拦截站内链接 → 幕布覆盖 → 跳转 */
+  /* 1) 页面离开：轻渐出（180ms 淡出+微缩放），落地后由 page-in 交错浮现 */
   document.addEventListener('click', function (e) {
     var a = e.target.closest('a');
     if (!a) return;
@@ -324,12 +318,12 @@ a:hover .img-zoom img,.card:hover .img-zoom img{transform:scale(1.05)}
     var url = new URL(a.href, location.href);
     if (url.origin !== location.origin || url.href === location.href) return;
     e.preventDefault();
-    curtain.classList.add('cover');
-    setTimeout(function () { location.href = url.href; }, 430);
+    document.body.classList.add('nav-out');
+    setTimeout(function () { location.href = url.href; }, 190);
   });
-  /* 后退/前进从缓存恢复时重置幕布 */
+  /* 后退/前进从缓存恢复时还原透明度 */
   window.addEventListener('pageshow', function (e) {
-    if (e.persisted) curtain.classList.remove('cover');
+    if (e.persisted) document.body.classList.remove('nav-out');
   });
 
   /* 2) 页面入场：每一块用不同动画，按内容语义分配（连贯节奏） */
