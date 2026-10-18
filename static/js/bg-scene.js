@@ -31,9 +31,9 @@
     ' float n2=fbm(q*2.5-vec2(t*.4,t*.6));',
     ' float n3=fbm(q*1.1+vec2(-t*.3,t*.5));',
     ' vec3 col=cream;',
-    ' col=mix(col,rose,smoothstep(.32,.78,n1));',
-    ' col=mix(col,caramel,smoothstep(.5,.94,n2)*.62);',
-    ' col=mix(col,lav,smoothstep(.55,1.,n3)*.5);',
+    ' col=mix(col,rose,smoothstep(.36,.85,n1)*.7);',
+    ' col=mix(col,caramel,smoothstep(.55,.95,n2)*.42);',
+    ' col=mix(col,lav,smoothstep(.6,1.,n3)*.36);',
     ' float m=exp(-length((uv-uMouse)*vec2(1.5,1.))*2.4);', // 鼠标柔光
     ' col+=caramel*m*.10;',
     ' float vig=smoothstep(1.25,.35,length(uv-.5)*1.35);', // 暗角
