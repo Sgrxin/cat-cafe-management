@@ -142,13 +142,17 @@ a:hover .img-zoom img,.card:hover .img-zoom img{transform:scale(1.05)}
 .footer{background:var(--brand);color:#e8d9c5;padding:24px 0 16px;margin-top:52px}
 .footer h6{color:#f3d9a8;font-family:var(--font-hand);letter-spacing:1px}
 .footer a{color:#e8d9c5}
+
+/* 双栏布局间距：主栏28px / 侧栏16px */
+.gap-core{display:flex;flex-direction:column;gap:28px}
+.gap-sub{display:flex;flex-direction:column;gap:16px}
 </style>
 {% block extra_css %}{% endblock %}
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-warm sticky-top">
+<nav class="navbar navbar-expand-lg nav-warm sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}"><i class="bi bi-heart-pulse-fill me-1"></i>喵屋猫咖</a>
+    <a class="navbar-brand" href="{% url 'home' %}"><i class="fa-solid fa-paw me-1"></i>喵屋猫咖</a>
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
     </button>

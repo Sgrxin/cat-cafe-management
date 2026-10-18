@@ -1,50 +1,85 @@
 {% extends "shop/base.html" %}
 {% load static %}
 {% block title %}猫王投票 · 喵屋猫咖{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== 猫王评选（vote-pink 豆沙粉模块） ===== */
+.vote-head{background:linear-gradient(150deg,#F9E9E8,#F5DBD9);border-radius:14px;
+  padding:18px 26px;margin-bottom:22px;border:1px solid #F0CFCB}
+.vote-head h4{font-family:var(--font-hand);color:#b05555;margin:0;font-weight:bold}
+.vote-head p{margin:4px 0 0;font-size:13px;color:#bb7d78}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:22px;margin:26px 0 8px}
+.podium-slot{text-align:center;width:200px}
+.podium-slot img{width:110px;height:110px;border-radius:50%;object-fit:cover;
+  border:4px solid #fff;box-shadow:0 6px 18px rgba(176,85,85,.25)}
+.podium-slot .p-name{font-family:var(--font-hand);font-size:18px;color:var(--text);margin-top:8px}
+.podium-slot .p-votes{font-size:13px;color:#b05555;font-weight:bold}
+.podium-base{border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-hand);color:#fff;font-size:22px;margin-top:10px}
+.p1 .podium-base{height:88px;background:linear-gradient(180deg,#D98E8E,#C47676)}
+.p2 .podium-base{height:62px;background:linear-gradient(180deg,#E5B1AC,#D99C96)}
+.p3 .podium-base{height:48px;background:linear-gradient(180deg,#EBCCC4,#E0B8AF)}
+.p1 img{width:132px;height:132px;border-color:#F3D9A8}
+.p1 .p-name{font-size:21px}
+.cand-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;
+  border:1px solid var(--line);border-radius:10px}
+.cand-row img{width:52px;height:52px;border-radius:8px;object-fit:cover}
+.cand-row .grow{flex:1;min-width:0}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h5 class="fw-bold mb-0">{{ event.title|default:"猫王评选" }}</h5>
-  <span class="minor">我的投票券：<span class="price">{{ tickets }}</span> 张（每笔消费赠1张）</span>
+<div class="vote-head d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div>
+    <h4>{{ event.title|default:"猫王评选" }}</h4>
+    <p>月底票数最高者当选本月猫王，堂食区挂照片一个月</p>
+  </div>
+  <span class="chip chip-vote">我的投票券：{{ tickets }} 张（每笔消费赠1张）</span>
 </div>
 
 {% if ranked %}
-<div class="card r-main p-3 mb-4">
-  <strong class="body-text mb-2">当前票数排行</strong>
-  {% for v in ranked %}
-  <div class="d-flex align-items-center gap-2 py-1" style="border-bottom:1px solid var(--line)">
-    <span style="width:24px;font-size:16px">{% if forloop.first %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}{{ forloop.counter }}.{% endif %}</span>
-    <span class="body-text flex-grow-1">{{ v.cat__name }}（{{ v.cat__breed }}）</span>
-    <span class="chip {% if forloop.first %}chip-sign{% else %}chip-pend{% endif %}">{{ v.n }} 票</span>
+<div class="card r-main p-3 mb-4" style="background:#fff">
+  <strong class="body-text mb-1">当前三强</strong>
+  <div class="podium">
+    {% for v in ranked|slice:":3" %}
+    <div class="podium-slot p{{ forloop.counter }}">
+      {% if v.cat__photo %}<img src="/media/{{ v.cat__photo }}" alt="{{ v.cat__name }}">{% endif %}
+      <div class="p-name">{{ v.cat__name }}</div>
+      <div class="p-votes">{{ v.n }} 票</div>
+      <div class="podium-base">{% if forloop.first %}1{% elif forloop.counter == 2 %}2{% else %}3{% endif %}</div>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 </div>
 {% endif %}
 
-<div class="row g-3">
+<div class="row g-2">
   {% for c in cats %}
-  <div class="col-md-3">
-    <div class="card h-100">
+  <div class="col-md-6">
+    <div class="cand-row">
       {% if c.photo %}
-      <img src="{{ c.photo.url }}" class="card-img-top" alt="{{ c.name }}" style="height:96px;object-fit:cover">
+      <img src="{{ c.photo.url }}" alt="{{ c.name }}">
       {% else %}
-      <img src="{% static 'img/cat_placeholder.png' %}" class="card-img-top" alt="" style="height:96px;object-fit:cover">
+      <img src="{% static 'img/cat_placeholder.png' %}" alt="{{ c.name }}">
       {% endif %}
-      <div class="card-body text-center">
-        <strong class="text-dark">{{ c.name }}</strong>
-        {% if c.my_vote %}<span class="chip chip-ok ms-1">已投</span>{% endif %}
-        <p class="minor mb-1">{{ c.breed }}</p>
-        <p class="minor mb-2">{{ c.votes }} 票</p>
-        {% if c.my_vote %}
-          <button class="btn-sub btn btn-sm w-100" disabled>已投</button>
-        {% elif tickets < 1 %}
-          <button class="btn-sub btn btn-sm w-100" disabled>无投票券</button>
-        {% else %}
-          <form method="post" action="{% url 'vote_do' c.id %}">
-            {% csrf_token %}
-            <button class="btn-sub btn btn-sm w-100">投TA一票</button>
-          </form>
-        {% endif %}
+      <div class="grow">
+        <div class="d-flex align-items-center gap-1">
+          <strong class="body-text text-dark">{{ c.name }}</strong>
+          {% if c.my_vote %}<span class="chip chip-ok">已投</span>{% endif %}
+        </div>
+        <div class="hint">{{ c.breed }} · {{ c.votes }} 票</div>
       </div>
+      {% if c.my_vote %}
+        <button class="btn-sub btn btn-sm" disabled>已投</button>
+      {% elif tickets < 1 %}
+        <button class="btn-sub btn btn-sm" disabled>无投票券</button>
+      {% else %}
+        <form method="post" action="{% url 'vote_do' c.id %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn-main btn btn-sm">投TA一票</button>
+        </form>
+      {% endif %}
     </div>
   </div>
   {% endfor %}

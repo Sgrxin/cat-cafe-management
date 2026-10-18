@@ -1,16 +1,29 @@
 ﻿{% extends "shop/base.html" %}
 {% block title %}工位预约 · 喵屋猫咖{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== 工位预约（reserve-green 鼠尾草绿模块） ===== */
+.reserve-head{background:linear-gradient(150deg,#EAF2EC,#DCE9DF);border-radius:14px;
+  padding:18px 26px;margin-bottom:18px;border:1px solid #CFE0D3}
+.reserve-head h4{font-family:var(--font-hand);color:#5E8A66;margin:0;font-weight:bold}
+.reserve-head p{margin:4px 0 0;font-size:13px;color:#7d967f}
+</style>
+{% endblock %}
+
 {% block content %}
-<h5 class="fw-bold mb-2">工位预约</h5>
-<p class="hint mb-3">预约成功请提前10分钟到店，超时预约自动取消；如遇时间冲突请更换时段或工位</p>
+<div class="reserve-head">
+  <h4>选个喜欢的位置</h4>
+  <p>预约成功请提前10分钟到店，超时预约自动取消；如遇时间冲突请更换时段或工位</p>
+</div>
 
 <div class="row g-2 mb-3">
   <div class="col-md-6">
-    <p class="minor mb-1">🏛 大厅散座区环境</p>
+    <p class="minor mb-1"><i class="fa-solid fa-couch me-1" style="color:#5E8A66"></i>大厅散座区环境</p>
     <img src="/media/seats/seat_hall.jpg" class="w-100 r-sub" style="height:150px;object-fit:cover" alt="大厅环境">
   </div>
   <div class="col-md-6">
-    <p class="minor mb-1">🚪 主题包间环境</p>
+    <p class="minor mb-1"><i class="fa-solid fa-door-closed me-1" style="color:#5E8A66"></i>主题包间环境</p>
     <img src="/media/seats/seat_room.jpg" class="w-100 r-sub" style="height:150px;object-fit:cover" alt="包间环境">
   </div>
 </div>

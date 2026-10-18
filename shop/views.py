@@ -75,6 +75,10 @@ def home(request):
         "staff_pending_redeem": staff_pending_redeem,
         "staff_today_orders": staff_today_orders,
         "today": today,
+        "cats_count": Cat.objects.filter(status="on").count(),
+        "seats_count": Seat.objects.filter(is_active=True).count(),
+        "products_count": Product.objects.filter(is_available=True).count(),
+        "reviews_count": Review.objects.count(),
     })
 
 
@@ -387,7 +391,7 @@ def redeem_do(request, gift_id):
 def vote_page(request):
     event = VoteEvent.objects.filter(is_active=True).first()
     votes = (Vote.objects.filter(event=event)
-             .values("cat__name", "cat__breed")
+             .values("cat__name", "cat__breed", "cat__photo")
              .annotate(n=Count("id")).order_by("-n"))
     my_cat_ids = list(Vote.objects.filter(event=event, user=request.user)
                       .values_list("cat_id", flat=True))

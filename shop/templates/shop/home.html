@@ -1,14 +1,186 @@
 ﻿{% extends "shop/base.html" %}
 {% load static %}
 {% block title %}首页 · 喵屋猫咖{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== 开屏欢迎页（首次访问） ===== */
+.splash{position:fixed;inset:0;z-index:3000;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;
+  background:linear-gradient(150deg,#FBF6EE,#F6E8E0 55%,#F0DCD2);
+  transition:transform .75s cubic-bezier(.7,0,.84,0),opacity .6s ease}
+.splash.leaving{transform:translateY(-100%);opacity:.4}
+.splash .paw-ambient{position:absolute;font-size:26px;opacity:.12;animation:pawfloat 7s ease-in-out infinite}
+.splash .paw-ambient:nth-of-type(odd){animation-delay:-3s}
+@keyframes pawfloat{0%,100%{transform:translateY(0) rotate(-12deg)}50%{transform:translateY(-26px) rotate(14deg)}}
+.splash-cat{width:190px;height:190px;border-radius:50%;object-fit:cover;
+  border:6px solid #fff;box-shadow:0 18px 44px rgba(122,92,72,.3);
+  animation:catIn .9s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes catIn{from{opacity:0;transform:scale(.3) rotate(-14deg)}to{opacity:1;transform:none}}
+.splash-meow{font-family:var(--font-hand);font-size:52px;color:var(--brand);
+  animation:fadeUp .7s .5s cubic-bezier(.34,1.56,.64,1) both}
+.splash-sub{font-size:17px;color:var(--text);animation:fadeUp .7s .75s ease both}
+.splash-quote{font-family:var(--font-hand);font-size:19px;color:#B8860B;
+  animation:fadeUp .7s 1s ease both}
+.splash .btn-main{animation:fadeUp .7s 1.25s ease both;width:auto;padding:0 34px}
+.splash .skip-hint{font-size:12px;color:var(--ph);animation:fadeUp .6s 1.5s ease both}
+
+/* ===== Hero 首屏 ===== */
+.hero{position:relative;border-radius:24px;overflow:hidden;
+  background:linear-gradient(120deg,#f6ead9,#f3ded2 45%,#ecd6c4);
+  min-height:560px;display:flex;align-items:center}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.6;pointer-events:none}
+.blob-a{width:420px;height:420px;background:#f2c9a0;top:-120px;right:-80px;animation:drift 16s ease-in-out infinite alternate}
+.blob-b{width:360px;height:360px;background:#e9c8c4;bottom:-140px;left:30%;animation:drift 20s ease-in-out infinite alternate-reverse}
+.blob-c{width:260px;height:260px;background:#dcd3f0;top:30%;right:36%;animation:drift 24s ease-in-out infinite alternate;animation-delay:-6s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}100%{transform:translate(-30px,20px) scale(.96)}}
+
+.hero-kicker{font-size:13px;letter-spacing:4px;color:var(--brand);font-weight:bold;margin-bottom:14px}
+.hero-title{font-family:var(--font-hand);font-size:clamp(34px,4.6vw,58px);line-height:1.22;color:var(--text);margin-bottom:18px}
+.hero-title .hl{color:var(--caramel-dark)}
+.hero-line{display:block;overflow:hidden}
+.hero-line span{display:inline-block}
+.hero-sub{font-size:15px;color:var(--muted);max-width:420px;margin-bottom:26px}
+
+.hero-photo-wrap{position:relative}
+.hero-photo{width:100%;max-width:520px;aspect-ratio:4/4.6;object-fit:cover;
+  border-radius:28px;transform:rotate(2.5deg);
+  box-shadow:0 24px 60px rgba(90,70,50,.28);display:block}
+@keyframes photoIn{from{opacity:0;transform:rotate(8deg) translateY(30px) scale(.94)}to{opacity:1;transform:rotate(2.5deg)}}
+.float-badge{position:absolute;background:rgba(255,253,249,.92);backdrop-filter:blur(6px);
+  border-radius:14px;padding:10px 16px;font-size:13px;font-weight:bold;color:var(--brand-deep);
+  box-shadow:0 8px 24px rgba(90,70,50,.18)}
+.float-badge i{color:var(--caramel);margin-right:6px}
+.fb-1{top:26px;left:-24px}
+.fb-2{bottom:34px;left:-40px}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+/* 跑马灯 */
+.marquee{overflow:hidden;background:var(--brand);padding:13px 0;margin:30px 0 6px;border-radius:14px}
+.marquee-track{display:flex;gap:56px;width:max-content;animation:marquee 26s linear infinite;
+  font-family:var(--font-hand);font-size:15px;color:#f3e2c8;letter-spacing:2px;white-space:nowrap}
+.marquee-track span i{color:var(--cat-yellow);margin:0 14px;font-size:11px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* 统计数字条 */
+.stat-strip{display:flex;gap:44px;flex-wrap:wrap}
+.stat-num{font-family:var(--font-hand);font-size:36px;font-weight:bold;color:var(--brand)}
+
+@media (max-width:1100px){
+  .hero{min-height:auto}
+  .hero-title{font-size:clamp(30px,5vw,44px)}
+  .float-badge{font-size:12px;padding:8px 12px}
+}
+@media (prefers-reduced-motion: reduce){
+  .blob,.float-badge,.marquee-track,.splash .paw-ambient{animation:none!important}
+}
+
+/* Hero 入场：开屏结束由 body.entered 触发 */
+.hero-kicker,.hero-sub,.hero .btn,.hero-photo,.float-badge,.stat-strip{opacity:0}
+body.entered .hero-kicker{animation:fadeUp .6s ease both}
+body.entered .hero-line span{animation:riseIn .8s cubic-bezier(.2,.7,.3,1) both}
+body.entered .hero-line:nth-of-type(2) span{animation-delay:.12s}
+body.entered .hero-sub{animation:fadeUp .6s .3s ease both}
+body.entered .hero .btn{animation:fadeUp .6s .4s ease both}
+body.entered .hero-photo{animation:photoIn 1s .25s cubic-bezier(.2,.7,.3,1) both}
+body.entered .float-badge{animation:bob 5s ease-in-out infinite, fadeUp .6s .7s ease both}
+body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
+@keyframes riseIn{from{transform:translateY(115%);opacity:0}to{transform:none;opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+{% endblock %}
+
 {% block content %}
-<div style="display:grid;grid-template-columns:1fr 370px;gap:28px;align-items:start">
+<!-- ===== 开屏欢迎页 ===== -->
+<div id="splash" class="splash">
+  <span class="paw-ambient" style="top:12%;left:14%">🐾</span>
+  <span class="paw-ambient" style="top:22%;right:16%">🐾</span>
+  <span class="paw-ambient" style="bottom:18%;left:20%">🐾</span>
+  <span class="paw-ambient" style="bottom:26%;right:22%">🐾</span>
+  <img class="splash-cat" src="/media/cats/cat_10.jpg" alt="喵屋猫咖">
+  <div class="splash-meow">喵呜～</div>
+  <div class="splash-sub">欢迎来到 喵屋猫咖</div>
+  <div class="splash-quote">“跟我们一起，进入猫咪的世界吧”</div>
+  <button id="enterBtn" class="btn-main" style="height:44px">进入猫咖 →</button>
+  <div class="skip-hint">点击进入 · 首次访问展示</div>
+</div>
+<script>
+  (function () {
+    var splash = document.getElementById('splash');
+    if (sessionStorage.getItem('meowSeen')) {
+      splash.style.display = 'none';
+      document.body.classList.add('entered');
+      return;
+    }
+    document.getElementById('enterBtn').addEventListener('click', function () {
+      sessionStorage.setItem('meowSeen', '1');
+      splash.classList.add('leaving');
+      setTimeout(function () {
+        splash.style.display = 'none';
+        document.body.classList.add('entered');
+      }, 700);
+    });
+  })();
+</script>
 
-  <!-- 左主栏 -->
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="blob blob-a"></div><div class="blob blob-b"></div><div class="blob blob-c"></div>
+  <div class="row g-0 align-items-center position-relative w-100">
+    <div class="col-lg-6 ps-5 pe-4 py-5">
+      <div class="hero-kicker">MEOW HOUSE · CAT CAFE</div>
+      <h1 class="hero-title">
+        <span class="hero-line"><span>一杯咖啡的时间</span></span>
+        <span class="hero-line"><span>一群<span class="hl">毛孩子</span>的陪伴</span></span>
+      </h1>
+      <p class="hero-sub">22只持证上岗的猫店员，30款精选好物，8间主题包间——在喵屋，把一个下午过成自己喜欢的样子。</p>
+      <div class="d-flex gap-3 flex-wrap">
+        <a class="btn-main btn px-4" href="{% url 'cats' %}"><i class="fa-solid fa-paw me-2"></i>看看猫店员</a>
+        <a class="btn-sub btn px-4" href="{% url 'reserve' %}"><i class="fa-regular fa-calendar-check me-2"></i>预约工位</a>
+      </div>
+      <div class="stat-strip mt-5">
+        <div><div class="stat-num" data-count="{{ cats_count }}">0</div><div class="minor">在岗猫店员</div></div>
+        <div><div class="stat-num" data-count="{{ seats_count }}">0</div><div class="minor">主题工位</div></div>
+        <div><div class="stat-num" data-count="{{ products_count }}">0</div><div class="minor">精选好物</div></div>
+        <div><div class="stat-num" data-count="{{ reviews_count }}">0</div><div class="minor">会员评价</div></div>
+      </div>
+    </div>
+    <div class="col-lg-6 d-flex justify-content-center py-4 position-relative">
+      <div class="hero-photo-wrap">
+        <img src="/media/cats/cat_05.jpg" class="hero-photo" alt="猫店员">
+        <div class="float-badge fb-1"><i class="fa-solid fa-paw"></i>22只猫店员在岗</div>
+        <div class="float-badge fb-2"><i class="fa-solid fa-mug-hot"></i>30款精选好物</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 跑马灯分隔带 -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>CAT CAFE<i class="fa-solid fa-paw"></i>撸猫<i class="fa-solid fa-paw"></i>精品咖啡<i class="fa-solid fa-paw"></i>甜品小吃<i class="fa-solid fa-paw"></i>猫王评选<i class="fa-solid fa-paw"></i>工位预约<i class="fa-solid fa-paw"></i>积分兑换<i class="fa-solid fa-paw"></i></span>
+    <span>CAT CAFE<i class="fa-solid fa-paw"></i>撸猫<i class="fa-solid fa-paw"></i>精品咖啡<i class="fa-solid fa-paw"></i>甜品小吃<i class="fa-solid fa-paw"></i>猫王评选<i class="fa-solid fa-paw"></i>工位预约<i class="fa-solid fa-paw"></i>积分兑换<i class="fa-solid fa-paw"></i></span>
+  </div>
+</div>
+
+<!-- 公告 -->
+{% if announcements %}
+<div class="d-flex flex-wrap gap-2 mt-4">
+  {% for a in announcements %}
+  <div class="card-sub px-3 py-2 d-flex align-items-center gap-2">
+    <i class="fa-solid fa-bullhorn" style="color:var(--caramel)"></i>
+    <strong class="small text-dark">{{ a.title }}</strong>
+    <span class="hint">{{ a.content|truncatechars:46 }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ===== 功能区 ===== -->
+<div style="display:grid;grid-template-columns:1fr 370px;gap:28px;align-items:start" class="mt-4">
   <div class="gap-core">
-
     {% if user.is_authenticated and user.userprofile.role in 'staff,admin' %}
-    <div class="card r-main p-3 reveal">
+    <div class="card r-main p-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong>店员工作台</strong>
         <span class="minor">{{ today|date:"m月d日" }} 今天</span>
@@ -25,7 +197,7 @@
           <a class="btn-txt" href="{% url 'staff_redemptions' %}">去核销 →</a>
         </div>
         <div>
-          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ cats.count }}</div>
+          <div style="font-size:30px;font-weight:bold;color:var(--brand)">{{ cats_count }}</div>
           <div class="minor">在岗猫咪</div>
           <a class="btn-txt" href="{% url 'cats' %}">查看 →</a>
         </div>
@@ -33,8 +205,7 @@
     </div>
     {% endif %}
 
-    <!-- 工位预约（主卡片） -->
-    <div class="card r-main p-3 reveal">
+    <div class="card r-main p-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
           <strong>工位预约</strong>
@@ -42,14 +213,12 @@
         </div>
         <a class="btn-main btn btn-sm" href="{% url 'reserve' %}">去预约</a>
       </div>
-
       {% if user_upcoming %}
       <div class="st-warn mb-2">
         你有一笔预约：{{ user_upcoming.date }} {{ user_upcoming.start_time }}-{{ user_upcoming.end_time }}
         {{ user_upcoming.seat.name }}，请提前10分钟到店
       </div>
       {% endif %}
-
       <div class="row g-2">
         <div class="col-md-6">
           <div class="module-sub mb-1">大厅散座</div>
@@ -65,7 +234,7 @@
           <div class="module-sub mb-1">主题包间</div>
           <div class="d-flex flex-wrap gap-1">
             {% for s in room_seats %}
-            <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}" title="{{ s.name }}{% if s.today_n >= 4 %} 已满{% else %} 可预约{% endif %}">
+            <span class="seat-dot {% if s.today_n >= 4 %}full{% else %}ok{% endif %}" title="{{ s.name }}">
               {{ s.name|cut:"猫屋包间" }}
             </span>
             {% endfor %}
@@ -75,46 +244,29 @@
       <p class="hint mt-2 mb-0">预约成功请提前10分钟到店，超时预约自动取消；包间按小时计费，含4杯饮品</p>
     </div>
 
-    <!-- 猫咪精选（次级卡片） -->
-    <div class="card-sub p-3 reveal">
+    <div>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong class="body-text">今天想见谁？</strong>
         <a class="btn-txt" href="{% url 'cats' %}">全部猫咪 →</a>
       </div>
-      <div class="d-flex gap-3">
+      <div class="row g-3">
         {% for c in cats %}
-        <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none text-center" style="flex:1">
-          {% if c.photo %}
-          <img src="{{ c.photo.url }}" class="r-sub" alt="{{ c.name }}" style="width:100%;height:104px;object-fit:cover">
-          {% else %}
-          <img src="{% static 'img/cat_placeholder.png' %}" class="r-sub" style="width:100%;height:104px;object-fit:cover" alt="暂无照片">
-          {% endif %}
-          <div class="small text-dark mt-1">{{ c.name }}</div>
-          <div class="hint">{{ c.personality|cut:"，"|truncatechars:6 }}</div>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- 店里卖什么（无框文字chip） -->
-    <div class="card-sub p-3 reveal">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <strong class="body-text">店里卖什么</strong>
-        <a class="btn-txt" href="{% url 'menu' %}">完整菜单 →</a>
-      </div>
-      <div class="d-flex flex-wrap gap-2">
-        {% for p in products|slice:":10" %}
-        <span class="chip chip-cat">{{ p.name }} ¥{{ p.price|floatformat }}</span>
+        <div class="{% if forloop.first %}col-md-6{% else %}col-md-2{% endif %}">
+          <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none text-center d-block">
+            <div class="img-zoom r-sub">
+              {% if c.photo %}<img src="{{ c.photo.url }}" class="w-100" alt="{{ c.name }}" style="height:{% if forloop.first %}240{% else %}150{% endif %}px;object-fit:cover">{% endif %}
+            </div>
+            <div class="small text-dark mt-1">{{ c.name }}</div>
+            <div class="hint">{{ c.personality|cut:"，"|truncatechars:6 }}</div>
+          </a>
+        </div>
         {% endfor %}
       </div>
     </div>
   </div>
 
-  <!-- 右侧栏 -->
   <div class="gap-sub">
-
     {% if user.is_authenticated %}
-    <!-- 会员信息（主卡片，高度自定义） -->
     <div class="card r-main p-3" style="min-height:270px">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <strong>{{ user.username }}</strong>
@@ -135,16 +287,15 @@
       <a class="btn-main btn btn-sm w-100" href="{% url 'redeem' %}">去兑换</a>
     </div>
 
-    <!-- 猫王评选（次级小卡） -->
     {% if top_votes %}
-    <div class="card-sub p-2 reveal">
+    <div class="card-sub p-2">
       <div class="d-flex justify-content-between align-items-center mb-1">
         <strong class="body-text">猫王评选</strong>
         <a class="btn-txt" href="{% url 'vote' %}">投票 →</a>
       </div>
       {% for v in top_votes %}
       <div class="d-flex align-items-center gap-2 py-1">
-        <span class="small {% if forloop.first %}text-warning{% endif %}">{% if forloop.first %}🏆{% else %}{{ forloop.counter }}.{% endif %}</span>
+        <span class="small">{% if forloop.first %}🥇{% elif forloop.counter == 2 %}🥈{% else %}🥉{% endif %}</span>
         <div class="small flex-grow-1 text-dark">{{ v.cat__name }}</div>
         <span class="hint">{{ v.n }}票</span>
       </div>
@@ -152,9 +303,8 @@
     </div>
     {% endif %}
 
-    <!-- 公告 -->
     {% if announcements %}
-    <div class="card-sub p-2 reveal">
+    <div class="card-sub p-2">
       <strong class="small">店内公告</strong>
       {% for a in announcements %}
       <div class="mt-2">
@@ -166,7 +316,6 @@
     {% endif %}
 
     {% else %}
-    <!-- 未登录引导 -->
     <div class="card r-main p-3" style="min-height:270px">
       <strong>成为喵屋会员</strong>
       <hr class="my-2" style="border-color:var(--line)">
@@ -176,11 +325,13 @@
       <a class="btn-sub btn btn-sm w-100" href="{% url 'login' %}">登录</a>
     </div>
     {% if announcements %}
-    <div class="card-sub p-2 reveal">
+    <div class="card-sub p-2">
       <strong class="small">店内公告</strong>
       {% for a in announcements %}
-      <div class="body-text mt-2">{{ a.title }}</div>
-      <div class="hint">{{ a.content|truncatechars:44 }}</div>
+      <div class="mt-2">
+        <div class="body-text">{{ a.title }}</div>
+        <div class="hint">{{ a.content|truncatechars:44 }}</div>
+      </div>
       {% endfor %}
     </div>
     {% endif %}
@@ -190,13 +341,15 @@
 
 <!-- 评价墙 -->
 {% if reviews %}
-<div class="mt-4">
-  <strong>喵友们怎么说</strong>
-  <span class="module-sub ms-2">来自到店会员</span>
-  <div class="row g-3 mt-1">
+<div class="mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <strong class="body-text">喵友们怎么说</strong>
+    <a class="btn-txt" href="{% url 'about' %}">更多评价 →</a>
+  </div>
+  <div class="row g-3">
     {% for r in reviews %}
     <div class="col-md-4">
-      <div class="card-sub p-3 reveal">
+      <div class="card-sub p-3">
         <div class="d-flex align-items-center gap-2 mb-1">
           <span class="rounded-circle text-center text-white" style="width:28px;height:28px;line-height:28px;background:var(--brand);font-size:13px">{{ r.user.username|first }}</span>
           <span class="small text-dark">{{ r.user.username }}</span>
@@ -211,3 +364,31 @@
 </div>
 {% endif %}
 {% endblock %}
+
+{% block extra_js %}
+<script>
+// 统计数字滚动：等开屏结束(body.entered)后再启动
+(function () {
+  function run() {
+    document.querySelectorAll('.stat-num[data-count]').forEach(function (el) {
+      var target = parseInt(el.dataset.count || '0', 10);
+      if (!target) { el.textContent = '0'; return; }
+      var t0 = null, dur = 1200;
+      function step(ts) {
+        if (!t0) t0 = ts;
+        var k = Math.min((ts - t0) / dur, 1);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3)));
+        if (k < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  if (document.body.classList.contains('entered')) { run(); return; }
+  var timer = setInterval(function () {
+    if (document.body.classList.contains('entered')) { clearInterval(timer); run(); }
+  }, 200);
+})();
+</script>
+{% endblock %}
+
+

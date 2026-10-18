@@ -1,9 +1,35 @@
 ﻿{% extends "shop/base.html" %}
 {% load static %}
 {% block title %}猫咪档案 · 喵屋猫咖{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== 拍立得照片墙（cat-yellow 奶黄模块） ===== */
+.cat-wall-head{background:linear-gradient(150deg,#FBF0DC,#F6E3BC);border-radius:14px;
+  padding:20px 26px;margin-bottom:20px;border:1px solid #F0D9A8}
+.cat-wall-head h4{font-family:var(--font-hand);color:#9a6b1f;margin:0;font-weight:bold}
+.cat-wall-head p{margin:4px 0 0;font-size:13px;color:#a98a55}
+.polaroid{background:#fff;padding:10px 10px 12px;border-radius:4px;
+  box-shadow:0 2px 8px rgba(90,70,50,.13);border:1px solid var(--line);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease;display:block}
+a:hover .polaroid{transform:rotate(0) translateY(-6px)!important;box-shadow:0 12px 26px rgba(90,70,50,.2)}
+.polaroid img{width:100%;height:170px;object-fit:cover;border-radius:2px}
+.polaroid .p-name{font-family:var(--font-hand);font-size:17px;color:var(--text);
+  margin-top:9px;display:flex;justify-content:space-between;align-items:baseline}
+.polaroid .p-note{font-size:12px;color:#a98a55;font-family:var(--font-hand)}
+.wall-grid .col-lg-3:nth-child(4n+1) .polaroid{transform:rotate(-1.6deg)}
+.wall-grid .col-lg-3:nth-child(4n+2) .polaroid{transform:rotate(1.1deg)}
+.wall-grid .col-lg-3:nth-child(4n+3) .polaroid{transform:rotate(-0.7deg)}
+.wall-grid .col-lg-3:nth-child(4n+4) .polaroid{transform:rotate(1.5deg)}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h5 class="mb-0 fw-bold">猫咪档案（{{ cats.count }} 只在岗）</h5>
+<div class="cat-wall-head d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div>
+    <h4>猫咪档案墙</h4>
+    <p>{{ cats.count }} 只在岗猫店员 · 点开拍立得认识它们</p>
+  </div>
   <form class="row g-2">
     <div class="col-auto">
       <select name="breed" class="form-select form-sm" style="width:150px">
@@ -26,25 +52,26 @@
   </form>
 </div>
 
-<div class="row g-3">
+<div class="row g-4 wall-grid">
   {% for c in cats %}
   <div class="col-md-4 col-lg-3">
     <a href="{% url 'cat_detail' c.id %}" class="text-decoration-none">
-    <div class="card h-100">
-      {% if c.photo %}
-      <img src="{{ c.photo.url }}" class="card-img-top" alt="{{ c.name }}" style="height:170px;object-fit:cover">
-      {% else %}
-      <img src="{% static 'img/cat_placeholder.png' %}" class="card-img-top" alt="{{ c.name }}" style="height:170px;object-fit:cover">
-      {% endif %}
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-baseline">
-          <strong class="text-dark">{{ c.name }}</strong>
-          <span class="hint">身价 ¥{{ c.reference_price|floatformat }}</span>
+      <div class="polaroid">
+        {% if c.photo %}
+        <img src="{{ c.photo.url }}" alt="{{ c.name }}">
+        {% else %}
+        <img src="{% static 'img/cat_placeholder.png' %}" alt="{{ c.name }}">
+        {% endif %}
+        <div class="p-name">
+          {{ c.name }}
+          <span class="p-note">身价 ¥{{ c.reference_price|floatformat }}</span>
         </div>
-        <p class="minor mb-2">{{ c.breed }}</p>
-        <span class="chip chip-cat">{{ c.personality|cut:"，"|truncatechars:8 }}</span>
+        <div class="d-flex justify-content-between align-items-center mt-1">
+          <span class="minor">{{ c.breed }}</span>
+          <span class="p-note">{{ c.personality|cut:"，"|truncatechars:8 }}</span>
+        </div>
       </div>
-    </div></a>
+    </a>
   </div>
   {% empty %}
   <p class="minor">没有符合条件的猫咪，换个筛选条件试试</p>
