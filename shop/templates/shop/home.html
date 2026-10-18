@@ -118,6 +118,7 @@ body.entered .stat-strip{animation:fadeUp .6s .55s ease both}
       setTimeout(function () {
         splash.style.display = 'none';
         document.body.classList.add('entered');
+        if (window.__pageIn) window.__pageIn();
       }, 700);
     });
   })();
