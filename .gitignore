@@ -47,3 +47,11 @@ fix_05.py
 fix9.py
 fix_final.py
 finalize_products.py
+
+# 公开仓库忽略：个人信息与本地文档
+00-*.md
+*.pptx
+任务书*
+__*
+_*
+db.sqlite3
